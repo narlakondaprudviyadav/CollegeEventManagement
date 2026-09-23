@@ -1,0 +1,226 @@
+package com.example.collegeeventmanagement;
+
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
+public class EventReminderScheduler {
+
+    // =====================================================
+    // REMINDER TIMES
+    // =====================================================
+
+    private static final long ONE_HOUR =
+            60 * 60 * 1000L;
+
+    private static final long FIVE_MINUTES =
+            5 * 60 * 1000L;
+
+
+    // =====================================================
+    // SCHEDULE ALL 3 NOTIFICATIONS
+    // =====================================================
+
+    public static void scheduleReminder(
+            Context context,
+            int eventId,
+            String eventName,
+            String eventDate,
+            String eventTime,
+            String venue) {
+
+        // -------------------------------------------------
+        // Convert event date + time into milliseconds
+        // -------------------------------------------------
+
+        SimpleDateFormat format =
+                new SimpleDateFormat(
+                        "d/M/yyyy HH:mm",
+                        Locale.getDefault()
+                );
+
+        format.setLenient(false);
+
+        Date eventDateTime;
+
+        try {
+
+            eventDateTime =
+                    format.parse(
+                            eventDate + " " + eventTime
+                    );
+
+        } catch (ParseException e) {
+
+            e.printStackTrace();
+            return;
+        }
+
+        if (eventDateTime == null) {
+            return;
+        }
+
+        long eventTimeMillis =
+                eventDateTime.getTime();
+
+
+        // =================================================
+        // 1 HOUR BEFORE
+        // =================================================
+
+        long oneHourBefore =
+                eventTimeMillis - ONE_HOUR;
+
+        scheduleAlarm(
+                context,
+                eventId,
+                eventName,
+                eventDate,
+                eventTime,
+                venue,
+                oneHourBefore,
+                1
+        );
+
+
+        // =================================================
+        // 5 MINUTES BEFORE
+        // =================================================
+
+        long fiveMinutesBefore =
+                eventTimeMillis - FIVE_MINUTES;
+
+        scheduleAlarm(
+                context,
+                eventId,
+                eventName,
+                eventDate,
+                eventTime,
+                venue,
+                fiveMinutesBefore,
+                2
+        );
+
+
+        // =================================================
+        // AT EVENT START
+        // =================================================
+
+        scheduleAlarm(
+                context,
+                eventId,
+                eventName,
+                eventDate,
+                eventTime,
+                venue,
+                eventTimeMillis,
+                3
+        );
+    }
+
+
+    // =====================================================
+    // SCHEDULE ONE ALARM
+    // =====================================================
+
+    private static void scheduleAlarm(
+            Context context,
+            int eventId,
+            String eventName,
+            String eventDate,
+            String eventTime,
+            String venue,
+            long triggerTime,
+            int reminderType) {
+
+        // Do not schedule alarms that are already in the past
+        if (triggerTime <= System.currentTimeMillis()) {
+            return;
+        }
+
+        AlarmManager alarmManager =
+                (AlarmManager) context.getSystemService(
+                        Context.ALARM_SERVICE
+                );
+
+        if (alarmManager == null) {
+            return;
+        }
+
+
+        // =================================================
+        // INTENT
+        // =================================================
+
+        Intent intent =
+                new Intent(
+                        context,
+                        EventReminderReceiver.class
+                );
+
+        intent.putExtra(
+                "EVENT_ID",
+                eventId
+        );
+
+        intent.putExtra(
+                "EVENT_NAME",
+                eventName
+        );
+
+        intent.putExtra(
+                "EVENT_DATE",
+                eventDate
+        );
+
+        intent.putExtra(
+                "EVENT_TIME",
+                eventTime
+        );
+
+        intent.putExtra(
+                "VENUE",
+                venue
+        );
+
+        intent.putExtra(
+                "REMINDER_TYPE",
+                reminderType
+        );
+
+
+        // =================================================
+        // UNIQUE REQUEST CODE
+        // =================================================
+
+        int requestCode =
+                eventId * 10 + reminderType;
+
+
+        PendingIntent pendingIntent =
+                PendingIntent.getBroadcast(
+                        context,
+                        requestCode,
+                        intent,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                                | PendingIntent.FLAG_IMMUTABLE
+                );
+
+
+        // =================================================
+        // SET ALARM
+        // =================================================
+
+        alarmManager.setAndAllowWhileIdle(
+                AlarmManager.RTC_WAKEUP,
+                triggerTime,
+                pendingIntent
+        );
+    }
+}

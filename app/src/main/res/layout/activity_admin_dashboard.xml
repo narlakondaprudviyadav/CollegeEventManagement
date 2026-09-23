@@ -1,0 +1,388 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#F7F5FC">
+
+    <!-- ================= MAIN CONTENT ================= -->
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <!-- ================= HEADER ================= -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="24dp">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Welcome back,"
+                        android:textSize="15sp"
+                        android:textColor="#777777" />
+
+                    <TextView
+                        android:id="@+id/adminNameTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Admin"
+                        android:textSize="26sp"
+                        android:textStyle="bold"
+                        android:textColor="#292333"
+                        android:layout_marginTop="3dp" />
+
+                </LinearLayout>
+
+                <!-- NOTIFICATION ICON -->
+
+                <ImageView
+                    android:id="@+id/notificationIcon"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/ic_notifications"
+                    app:tint="#6B4DB5"
+                    android:padding="12dp"
+                    android:background="#FFFFFF"
+                    android:contentDescription="Notifications" />
+
+            </LinearLayout>
+
+
+            <!-- ================= STATISTICS ================= -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:orientation="horizontal"
+                android:layout_marginBottom="28dp">
+
+                <!-- TOTAL EVENTS -->
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:padding="15dp"
+                    android:background="@drawable/bg_primary_card"
+                    android:layout_marginEnd="8dp">
+
+                    <ImageView
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:src="@drawable/ic_event"
+                        app:tint="#FFFFFF"
+                        android:contentDescription="Events" />
+
+                    <TextView
+                        android:id="@+id/totalEventsCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textSize="30sp"
+                        android:textStyle="bold"
+                        android:textColor="#FFFFFF"
+                        android:layout_marginTop="5dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Total Events"
+                        android:textSize="13sp"
+                        android:textColor="#EDE8FA" />
+
+                </LinearLayout>
+
+
+                <!-- TOTAL REGISTRATIONS -->
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:padding="15dp"
+                    android:background="@drawable/bg_primary_card"
+                    android:layout_marginStart="8dp">
+
+                    <ImageView
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:src="@drawable/ic_people"
+                        app:tint="#FFFFFF"
+                        android:contentDescription="Registrations" />
+
+                    <TextView
+                        android:id="@+id/totalRegistrationsCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textSize="30sp"
+                        android:textStyle="bold"
+                        android:textColor="#FFFFFF"
+                        android:layout_marginTop="5dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Registrations"
+                        android:textSize="13sp"
+                        android:textColor="#EDE8FA" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+            <!-- ================= QUICK ACTIONS ================= -->
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Quick Actions"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="#292333"
+                android:layout_marginBottom="15dp" />
+
+
+            <!-- ADD EVENT + MANAGE EVENTS -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <!-- ADD EVENT -->
+
+                <Button
+                    android:id="@+id/addEventButton"
+                    android:layout_width="0dp"
+                    android:layout_height="110dp"
+                    android:layout_weight="1"
+                    android:text="Add Event"
+                    android:textSize="14sp"
+                    android:textAllCaps="false"
+                    android:drawableTop="@drawable/ic_add"
+                    android:drawableTint="#FFFFFF"
+                    android:drawablePadding="8dp"
+                    android:padding="12dp"
+                    android:layout_marginEnd="8dp" />
+
+
+                <!-- MANAGE EVENTS -->
+
+                <Button
+                    android:id="@+id/manageEventsButton"
+                    android:layout_width="0dp"
+                    android:layout_height="110dp"
+                    android:layout_weight="1"
+                    android:text="Manage Events"
+                    android:textSize="14sp"
+                    android:textAllCaps="false"
+                    android:drawableTop="@drawable/ic_event"
+                    android:drawableTint="#FFFFFF"
+                    android:drawablePadding="8dp"
+                    android:padding="12dp"
+                    android:layout_marginStart="8dp" />
+
+            </LinearLayout>
+
+
+            <!-- ================= VIEW REGISTRATIONS ================= -->
+
+            <Button
+                android:id="@+id/registrationsButton"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:text="View Registrations"
+                android:textAllCaps="false"
+                android:textSize="16sp"
+                android:drawableStart="@drawable/ic_people"
+                android:drawableTint="#FFFFFF"
+                android:drawablePadding="12dp"
+                android:gravity="center_vertical"
+                android:paddingStart="20dp"
+                android:layout_marginTop="15dp" />
+
+
+            <!-- ================= NOTIFICATIONS ================= -->
+
+            <Button
+                android:id="@+id/notificationsButton"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:text="Notifications"
+                android:textAllCaps="false"
+                android:textSize="16sp"
+                android:drawableStart="@drawable/ic_notifications"
+                android:drawableTint="#FFFFFF"
+                android:drawablePadding="12dp"
+                android:gravity="center_vertical"
+                android:paddingStart="20dp"
+                android:layout_marginTop="12dp" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+
+    <!-- ================= BOTTOM NAVIGATION ================= -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:background="#FFFFFF"
+        android:elevation="10dp">
+
+
+        <!-- HOME -->
+
+        <LinearLayout
+            android:id="@+id/navHome"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true">
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/ic_home"
+                app:tint="#6B4DB5"
+                android:contentDescription="Home" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Home"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textColor="#6B4DB5"
+                android:layout_marginTop="3dp" />
+
+        </LinearLayout>
+
+
+        <!-- EVENTS -->
+
+        <LinearLayout
+            android:id="@+id/navEvents"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true">
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/ic_event"
+                app:tint="#777777"
+                android:contentDescription="Events" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Events"
+                android:textSize="12sp"
+                android:textColor="#777777"
+                android:layout_marginTop="3dp" />
+
+        </LinearLayout>
+
+
+        <!-- REGISTRATIONS -->
+
+        <LinearLayout
+            android:id="@+id/navRegistrations"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true">
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/ic_people"
+                app:tint="#777777"
+                android:contentDescription="Registrations" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Registrations"
+                android:textSize="12sp"
+                android:textColor="#777777"
+                android:layout_marginTop="3dp" />
+
+        </LinearLayout>
+
+
+        <!-- PROFILE -->
+
+        <LinearLayout
+            android:id="@+id/navProfile"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true">
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/ic_person"
+                app:tint="#777777"
+                android:contentDescription="Profile" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Profile"
+                android:textSize="12sp"
+                android:textColor="#777777"
+                android:layout_marginTop="3dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

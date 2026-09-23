@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#F7F5FC">
+
+    <!-- ================= MAIN CONTENT ================= -->
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <!-- ================= HEADER ================= -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="24dp">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Welcome back,"
+                        android:textSize="15sp"
+                        android:textColor="#777777" />
+
+                    <TextView
+                        android:id="@+id/studentNameTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Student"
+                        android:textSize="26sp"
+                        android:textStyle="bold"
+                        android:textColor="#292333"
+                        android:layout_marginTop="3dp" />
+
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/notificationIcon"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/ic_notifications"
+                    app:tint="#6B4DB5"
+                    android:padding="12dp"
+                    android:background="#FFFFFF"
+                    android:contentDescription="Notifications" />
+
+            </LinearLayout>
+
+
+            <!-- ================= UPCOMING EVENTS ================= -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:orientation="vertical"
+                android:padding="22dp"
+                android:gravity="center_vertical"
+                android:background="@drawable/bg_primary_card"
+                android:layout_marginBottom="28dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="UPCOMING EVENTS"
+                            android:textColor="#FFFFFF"
+                            android:textSize="13sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/upcomingEventsCount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:textColor="#FFFFFF"
+                            android:textSize="38sp"
+                            android:textStyle="bold"
+                            android:layout_marginTop="3dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Events available for registration"
+                            android:textColor="#EDE8FA"
+                            android:textSize="13sp" />
+
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:src="@drawable/ic_event"
+                        app:tint="#FFFFFF"
+                        android:padding="10dp"
+                        android:contentDescription="Events" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+            <!-- ================= QUICK ACTIONS ================= -->
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Quick Actions"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="#292333"
+                android:layout_marginBottom="15dp" />
+
+
+            <!-- BROWSE EVENTS + MY EVENTS -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/browseEventsButton"
+                    android:layout_width="0dp"
+                    android:layout_height="110dp"
+                    android:layout_weight="1"
+                    android:text="Browse Events"
+                    android:textSize="14sp"
+                    android:textAllCaps="false"
+                    android:textColor="#FFFFFF"
+                    android:drawableTop="@drawable/ic_event"
+                    android:drawablePadding="8dp"
+                    android:padding="12dp"
+                    android:layout_marginEnd="8dp"
+                    android:background="@drawable/bg_primary_card" />
+
+                <Button
+                    android:id="@+id/myEventsButton"
+                    android:layout_width="0dp"
+                    android:layout_height="110dp"
+                    android:layout_weight="1"
+                    android:text="My Events"
+                    android:textSize="14sp"
+                    android:textAllCaps="false"
+                    android:textColor="#FFFFFF"
+                    android:drawableTop="@drawable/ic_confirmation"
+                    android:drawablePadding="8dp"
+                    android:padding="12dp"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/bg_primary_card" />
+
+            </LinearLayout>
+
+            <!-- NOTIFICATIONS -->
+
+            <Button
+                android:id="@+id/notificationsButton"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:text="Notifications"
+                android:textAllCaps="false"
+                android:textSize="16sp"
+                android:drawableStart="@drawable/ic_notifications"
+                android:drawablePadding="12dp"
+                android:gravity="center_vertical"
+                android:paddingStart="20dp"
+                android:layout_marginTop="15dp" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+
+    <!-- ================= BOTTOM NAVIGATION ================= -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:background="#FFFFFF"
+        android:elevation="10dp">
+
+
+        <!-- HOME -->
+
+        <LinearLayout
+            android:id="@+id/navHome"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true">
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/ic_home"
+                app:tint="#6B4DB5"
+                android:contentDescription="Home" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Home"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textColor="#6B4DB5"
+                android:layout_marginTop="3dp" />
+
+        </LinearLayout>
+
+
+        <!-- EVENTS -->
+
+        <LinearLayout
+            android:id="@+id/navEvents"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true">
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/ic_event"
+                app:tint="#777777"
+                android:contentDescription="Events" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Events"
+                android:textSize="12sp"
+                android:textColor="#777777"
+                android:layout_marginTop="3dp" />
+
+        </LinearLayout>
+
+
+        <!-- MY EVENTS -->
+
+        <LinearLayout
+            android:id="@+id/navMyEvents"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true">
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/ic_confirmation"
+                app:tint="#777777"
+                android:contentDescription="My Events" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="My Events"
+                android:textSize="12sp"
+                android:textColor="#777777"
+                android:layout_marginTop="3dp" />
+
+        </LinearLayout>
+
+
+        <!-- PROFILE -->
+
+        <LinearLayout
+            android:id="@+id/navProfile"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true">
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/ic_person"
+                app:tint="#777777"
+                android:contentDescription="Profile" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Profile"
+                android:textSize="12sp"
+                android:textColor="#777777"
+                android:layout_marginTop="3dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

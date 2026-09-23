@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F7F5FC">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <!-- HEADER -->
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Create New Account"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:textColor="#292333"
+            android:gravity="center"
+            android:layout_marginTop="35dp"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Join the College Event Management system"
+            android:textSize="14sp"
+            android:textColor="#777777"
+            android:gravity="center"
+            android:layout_marginBottom="30dp" />
+
+
+        <!-- NAME -->
+
+        <EditText
+            android:id="@+id/nameEditText"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:hint="Full Name"
+            android:inputType="textPersonName"
+            android:padding="15dp"
+            android:background="#FFFFFF" />
+
+
+        <!-- EMAIL -->
+
+        <EditText
+            android:id="@+id/emailEditText"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:hint="Email Address"
+            android:inputType="textEmailAddress"
+            android:padding="15dp"
+            android:background="#FFFFFF"
+            android:layout_marginTop="14dp" />
+
+
+        <!-- PASSWORD -->
+
+        <EditText
+            android:id="@+id/passwordEditText"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:hint="Password"
+            android:inputType="textPassword"
+            android:padding="15dp"
+            android:background="#FFFFFF"
+            android:layout_marginTop="14dp" />
+
+
+        <!-- CONFIRM PASSWORD -->
+
+        <EditText
+            android:id="@+id/confirmPasswordEditText"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:hint="Confirm Password"
+            android:inputType="textPassword"
+            android:padding="15dp"
+            android:background="#FFFFFF"
+            android:layout_marginTop="14dp" />
+
+
+        <!-- ROLE -->
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Select Role"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#292333"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="5dp" />
+
+        <RadioGroup
+            android:id="@+id/roleRadioGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <RadioButton
+                android:id="@+id/studentRadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Student"
+                android:textColor="#292333"
+                android:checked="true"
+                android:layout_marginEnd="35dp" />
+
+            <RadioButton
+                android:id="@+id/adminRadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Admin"
+                android:textColor="#292333" />
+
+        </RadioGroup>
+
+
+        <!-- CREATE ACCOUNT -->
+
+        <Button
+            android:id="@+id/createAccountButton"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:text="CREATE ACCOUNT"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
+            android:textAllCaps="false"
+            android:background="@drawable/bg_primary_card"
+            android:layout_marginTop="25dp" />
+
+
+        <!-- LOGIN -->
+
+        <TextView
+            android:id="@+id/loginTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Already have an account? Login"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:textColor="#6B4DB5"
+            android:layout_gravity="center"
+            android:layout_marginTop="22dp"
+            android:padding="8dp"
+            android:clickable="true"
+            android:focusable="true" />
+
+    </LinearLayout>
+
+</ScrollView>
