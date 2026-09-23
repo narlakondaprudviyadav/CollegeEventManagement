@@ -12,6 +12,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.text.ParseException;
@@ -53,7 +54,9 @@ public class ManageEventsActivity extends AppCompatActivity {
         // BACK BUTTON
         // =========================
 
-        backButton.setOnClickListener(v -> finish());
+        backButton.setOnClickListener(v ->
+                finish()
+        );
 
         // =========================
         // LOAD EVENTS
@@ -145,7 +148,9 @@ public class ManageEventsActivity extends AppCompatActivity {
                     cursor.getColumnIndex("organizer");
 
             int maxRegistrationsIndex =
-                    cursor.getColumnIndex("max_registrations");
+                    cursor.getColumnIndex(
+                            "max_registrations"
+                    );
 
 
             int eventId =
@@ -185,7 +190,9 @@ public class ManageEventsActivity extends AppCompatActivity {
 
             int maxRegistrations =
                     maxRegistrationsIndex != -1
-                            ? cursor.getInt(maxRegistrationsIndex)
+                            ? cursor.getInt(
+                            maxRegistrationsIndex
+                    )
                             : 50;
 
 
@@ -607,6 +614,7 @@ public class ManageEventsActivity extends AppCompatActivity {
                 )
         );
 
+
         LinearLayout.LayoutParams editButtonParams =
                 new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
@@ -681,6 +689,110 @@ public class ManageEventsActivity extends AppCompatActivity {
         });
 
 
+        // =====================================================
+        // DELETE BUTTON
+        // =====================================================
+
+        Button deleteButton =
+                new Button(this);
+
+        deleteButton.setText(
+                "DELETE"
+        );
+
+        deleteButton.setTextColor(
+                Color.WHITE
+        );
+
+        deleteButton.setTextSize(
+                14
+        );
+
+        deleteButton.setAllCaps(
+                false
+        );
+
+        deleteButton.setBackgroundTintList(
+                android.content.res.ColorStateList.valueOf(
+                        Color.rgb(
+                                198,
+                                40,
+                                40
+                        )
+                )
+        );
+
+
+        LinearLayout.LayoutParams deleteButtonParams =
+                new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                );
+
+        deleteButtonParams.setMargins(
+                0,
+                8,
+                0,
+                0
+        );
+
+        deleteButton.setLayoutParams(
+                deleteButtonParams
+        );
+
+
+        // =====================================================
+        // DELETE CONFIRMATION
+        // =====================================================
+
+        deleteButton.setOnClickListener(v -> {
+
+            new AlertDialog.Builder(
+                    ManageEventsActivity.this
+            )
+                    .setTitle("Delete Event")
+                    .setMessage(
+                            "Are you sure you want to delete \"" +
+                                    eventName +
+                                    "\"?"
+                    )
+                    .setNegativeButton(
+                            "CANCEL",
+                            null
+                    )
+                    .setPositiveButton(
+                            "DELETE",
+                            (dialog, which) -> {
+
+                                boolean deleted =
+                                        databaseHelper.deleteEvent(
+                                                eventId
+                                        );
+
+                                if (deleted) {
+
+                                    android.widget.Toast.makeText(
+                                            ManageEventsActivity.this,
+                                            "Event deleted successfully",
+                                            android.widget.Toast.LENGTH_SHORT
+                                    ).show();
+
+                                    loadEvents();
+
+                                } else {
+
+                                    android.widget.Toast.makeText(
+                                            ManageEventsActivity.this,
+                                            "Failed to delete event",
+                                            android.widget.Toast.LENGTH_SHORT
+                                    ).show();
+                                }
+                            }
+                    )
+                    .show();
+        });
+
+
         // =========================
         // ADD VIEWS TO CARD
         // =========================
@@ -719,6 +831,10 @@ public class ManageEventsActivity extends AppCompatActivity {
 
         card.addView(
                 editButton
+        );
+
+        card.addView(
+                deleteButton
         );
 
 

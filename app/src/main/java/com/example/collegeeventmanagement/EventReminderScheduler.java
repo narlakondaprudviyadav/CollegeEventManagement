@@ -4,6 +4,8 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
+import android.provider.Settings;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -11,10 +13,6 @@ import java.util.Date;
 import java.util.Locale;
 
 public class EventReminderScheduler {
-
-    // =====================================================
-    // REMINDER TIMES
-    // =====================================================
 
     private static final long ONE_HOUR =
             60 * 60 * 1000L;
@@ -34,10 +32,6 @@ public class EventReminderScheduler {
             String eventDate,
             String eventTime,
             String venue) {
-
-        // -------------------------------------------------
-        // Convert event date + time into milliseconds
-        // -------------------------------------------------
 
         SimpleDateFormat format =
                 new SimpleDateFormat(
@@ -109,7 +103,7 @@ public class EventReminderScheduler {
 
 
         // =================================================
-        // AT EVENT START
+        // EVENT START
         // =================================================
 
         scheduleAlarm(
@@ -139,10 +133,14 @@ public class EventReminderScheduler {
             long triggerTime,
             int reminderType) {
 
-        // Do not schedule alarms that are already in the past
+        // -------------------------------------------------
+        // Don't schedule past alarms
+        // -------------------------------------------------
+
         if (triggerTime <= System.currentTimeMillis()) {
             return;
         }
+
 
         AlarmManager alarmManager =
                 (AlarmManager) context.getSystemService(
@@ -214,13 +212,36 @@ public class EventReminderScheduler {
 
 
         // =================================================
-        // SET ALARM
+        // USE EXACT ALARM WHEN AVAILABLE
         // =================================================
 
-        alarmManager.setAndAllowWhileIdle(
-                AlarmManager.RTC_WAKEUP,
-                triggerTime,
-                pendingIntent
-        );
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+
+            if (alarmManager.canScheduleExactAlarms()) {
+
+                alarmManager.setExactAndAllowWhileIdle(
+                        AlarmManager.RTC_WAKEUP,
+                        triggerTime,
+                        pendingIntent
+                );
+
+            } else {
+
+                // Fall back to inexact alarm
+                alarmManager.setAndAllowWhileIdle(
+                        AlarmManager.RTC_WAKEUP,
+                        triggerTime,
+                        pendingIntent
+                );
+            }
+
+        } else {
+
+            alarmManager.setExactAndAllowWhileIdle(
+                    AlarmManager.RTC_WAKEUP,
+                    triggerTime,
+                    pendingIntent
+            );
+        }
     }
 }
