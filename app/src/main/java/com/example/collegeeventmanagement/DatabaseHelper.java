@@ -1031,7 +1031,42 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return result != -1;
     }
 
+// =====================================================
+// DEREGISTER STUDENT FROM EVENT
+// =====================================================
 
+    public boolean deregisterFromEvent(
+            int eventId,
+            String studentEmail) {
+
+        studentEmail =
+                studentEmail == null
+                        ? ""
+                        : studentEmail.trim()
+                        .toLowerCase(Locale.ROOT);
+
+        SQLiteDatabase db =
+                this.getWritableDatabase();
+
+        int result =
+                db.delete(
+                        TABLE_REGISTRATIONS,
+
+                        REG_EVENT_ID +
+                                "=? AND " +
+                                REG_STUDENT_EMAIL +
+                                "=?",
+
+                        new String[]{
+                                String.valueOf(eventId),
+                                studentEmail
+                        }
+                );
+
+        db.close();
+
+        return result > 0;
+    }
     // =====================================================
     // CHECK IF STUDENT IS REGISTERED
     // =====================================================

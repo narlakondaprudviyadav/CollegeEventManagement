@@ -5,7 +5,6 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
-import android.provider.Settings;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -228,6 +227,7 @@ public class EventReminderScheduler {
             } else {
 
                 // Fall back to inexact alarm
+
                 alarmManager.setAndAllowWhileIdle(
                         AlarmManager.RTC_WAKEUP,
                         triggerTime,
@@ -243,5 +243,131 @@ public class EventReminderScheduler {
                     pendingIntent
             );
         }
+    }
+
+
+    // =====================================================
+    // CANCEL ALL REMINDERS FOR AN EVENT
+    // =====================================================
+
+    public static void cancelReminders(
+            Context context,
+            int eventId) {
+
+        AlarmManager alarmManager =
+                (AlarmManager) context.getSystemService(
+                        Context.ALARM_SERVICE
+                );
+
+        if (alarmManager == null) {
+            return;
+        }
+
+
+        // =================================================
+        // CANCEL 1 HOUR REMINDER
+        // =================================================
+
+        cancelOneReminder(
+                context,
+                alarmManager,
+                eventId,
+                1
+        );
+
+
+        // =================================================
+        // CANCEL 5 MINUTE REMINDER
+        // =================================================
+
+        cancelOneReminder(
+                context,
+                alarmManager,
+                eventId,
+                2
+        );
+
+
+        // =================================================
+        // CANCEL EVENT START REMINDER
+        // =================================================
+
+        cancelOneReminder(
+                context,
+                alarmManager,
+                eventId,
+                3
+        );
+    }
+
+
+    // =====================================================
+    // CANCEL ONE REMINDER
+    // =====================================================
+
+    private static void cancelOneReminder(
+            Context context,
+            AlarmManager alarmManager,
+            int eventId,
+            int reminderType) {
+
+
+        // =================================================
+        // CREATE SAME INTENT
+        // =================================================
+
+        Intent intent =
+                new Intent(
+                        context,
+                        EventReminderReceiver.class
+                );
+
+        intent.putExtra(
+                "EVENT_ID",
+                eventId
+        );
+
+        intent.putExtra(
+                "REMINDER_TYPE",
+                reminderType
+        );
+
+
+        // =================================================
+        // USE SAME REQUEST CODE
+        // =================================================
+
+        int requestCode =
+                eventId * 10 + reminderType;
+
+
+        // =================================================
+        // FIND EXISTING PENDING INTENT
+        // =================================================
+
+        PendingIntent pendingIntent =
+                PendingIntent.getBroadcast(
+                        context,
+                        requestCode,
+                        intent,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                                | PendingIntent.FLAG_IMMUTABLE
+                );
+
+
+        // =================================================
+        // CANCEL ALARM
+        // =================================================
+
+        alarmManager.cancel(
+                pendingIntent
+        );
+
+
+        // =================================================
+        // CANCEL PENDING INTENT
+        // =================================================
+
+        pendingIntent.cancel();
     }
 }

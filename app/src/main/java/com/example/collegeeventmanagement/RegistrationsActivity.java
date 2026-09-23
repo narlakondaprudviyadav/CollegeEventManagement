@@ -20,27 +20,36 @@ public class RegistrationsActivity extends AppCompatActivity {
     private DatabaseHelper databaseHelper;
 
 
+    // =====================================================
+    // ON CREATE
+    // =====================================================
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_registrations);
+        setContentView(
+                R.layout.activity_registrations
+        );
 
 
-        // =========================
+        // =================================================
         // DATABASE
-        // =========================
+        // =================================================
 
         databaseHelper =
                 new DatabaseHelper(this);
 
 
-        // =========================
+        // =================================================
         // CONNECT VIEWS
-        // =========================
+        // =================================================
 
         backButton =
-                findViewById(R.id.backButton);
+                findViewById(
+                        R.id.backButton
+                );
 
         registrationsContainer =
                 findViewById(
@@ -48,18 +57,18 @@ public class RegistrationsActivity extends AppCompatActivity {
                 );
 
 
-        // =========================
+        // =================================================
         // BACK BUTTON
-        // =========================
+        // =================================================
 
         backButton.setOnClickListener(v ->
                 finish()
         );
 
 
-        // =========================
+        // =================================================
         // LOAD REGISTRATIONS
-        // =========================
+        // =================================================
 
         loadRegistrations();
     }
@@ -78,9 +87,9 @@ public class RegistrationsActivity extends AppCompatActivity {
                 databaseHelper.getAllRegistrations();
 
 
-        // =========================
+        // =================================================
         // NO REGISTRATIONS
-        // =========================
+        // =================================================
 
         if (cursor == null ||
                 cursor.getCount() == 0) {
@@ -95,11 +104,16 @@ public class RegistrationsActivity extends AppCompatActivity {
         }
 
 
-        // =========================
+        // =================================================
         // READ REGISTRATIONS
-        // =========================
+        // =================================================
 
         while (cursor.moveToNext()) {
+
+
+            // -------------------------------------------------
+            // REGISTRATION ID
+            // -------------------------------------------------
 
             int registrationId =
                     cursor.getInt(
@@ -109,6 +123,10 @@ public class RegistrationsActivity extends AppCompatActivity {
                     );
 
 
+            // -------------------------------------------------
+            // EVENT ID
+            // -------------------------------------------------
+
             int eventId =
                     cursor.getInt(
                             cursor.getColumnIndexOrThrow(
@@ -116,6 +134,10 @@ public class RegistrationsActivity extends AppCompatActivity {
                             )
                     );
 
+
+            // -------------------------------------------------
+            // STUDENT NAME
+            // -------------------------------------------------
 
             String studentName =
                     cursor.getString(
@@ -125,6 +147,10 @@ public class RegistrationsActivity extends AppCompatActivity {
                     );
 
 
+            // -------------------------------------------------
+            // STUDENT EMAIL
+            // -------------------------------------------------
+
             String studentEmail =
                     cursor.getString(
                             cursor.getColumnIndexOrThrow(
@@ -132,6 +158,10 @@ public class RegistrationsActivity extends AppCompatActivity {
                             )
                     );
 
+
+            // -------------------------------------------------
+            // EVENT NAME
+            // -------------------------------------------------
 
             String eventName =
                     cursor.getString(
@@ -141,6 +171,10 @@ public class RegistrationsActivity extends AppCompatActivity {
                     );
 
 
+            // -------------------------------------------------
+            // EVENT DATE
+            // -------------------------------------------------
+
             String eventDate =
                     cursor.getString(
                             cursor.getColumnIndexOrThrow(
@@ -148,6 +182,10 @@ public class RegistrationsActivity extends AppCompatActivity {
                             )
                     );
 
+
+            // -------------------------------------------------
+            // EVENT TIME
+            // -------------------------------------------------
 
             String eventTime =
                     cursor.getString(
@@ -157,6 +195,10 @@ public class RegistrationsActivity extends AppCompatActivity {
                     );
 
 
+            // -------------------------------------------------
+            // VENUE
+            // -------------------------------------------------
+
             String venue =
                     cursor.getString(
                             cursor.getColumnIndexOrThrow(
@@ -164,6 +206,10 @@ public class RegistrationsActivity extends AppCompatActivity {
                             )
                     );
 
+
+            // =================================================
+            // ADD REGISTRATION CARD
+            // =================================================
 
             addRegistrationCard(
                     registrationId,
@@ -177,6 +223,10 @@ public class RegistrationsActivity extends AppCompatActivity {
             );
         }
 
+
+        // =================================================
+        // CLOSE CURSOR
+        // =================================================
 
         cursor.close();
     }
@@ -197,9 +247,9 @@ public class RegistrationsActivity extends AppCompatActivity {
             String venue) {
 
 
-        // =========================
+        // =================================================
         // CARD
-        // =========================
+        // =================================================
 
         LinearLayout card =
                 new LinearLayout(this);
@@ -216,9 +266,9 @@ public class RegistrationsActivity extends AppCompatActivity {
         );
 
 
-        // =========================
+        // =================================================
         // CARD BACKGROUND
-        // =========================
+        // =================================================
 
         GradientDrawable background =
                 new GradientDrawable();
@@ -240,20 +290,18 @@ public class RegistrationsActivity extends AppCompatActivity {
                 )
         );
 
-
         card.setBackground(
                 background
         );
-
 
         card.setElevation(
                 dp(3)
         );
 
 
-        // =========================
+        // =================================================
         // CARD MARGINS
-        // =========================
+        // =================================================
 
         LinearLayout.LayoutParams cardParams =
                 new LinearLayout.LayoutParams(
@@ -261,14 +309,12 @@ public class RegistrationsActivity extends AppCompatActivity {
                         LinearLayout.LayoutParams.WRAP_CONTENT
                 );
 
-
         cardParams.setMargins(
                 dp(10),
                 dp(7),
                 dp(10),
                 dp(7)
         );
-
 
         card.setLayoutParams(
                 cardParams
@@ -282,16 +328,13 @@ public class RegistrationsActivity extends AppCompatActivity {
         TextView studentNameText =
                 new TextView(this);
 
-
         studentNameText.setText(
                 studentName
         );
 
-
         studentNameText.setTextSize(
                 19
         );
-
 
         studentNameText.setTextColor(
                 Color.rgb(
@@ -301,12 +344,10 @@ public class RegistrationsActivity extends AppCompatActivity {
                 )
         );
 
-
         studentNameText.setTypeface(
                 null,
                 Typeface.BOLD
         );
-
 
         studentNameText.setPadding(
                 0,
@@ -314,7 +355,6 @@ public class RegistrationsActivity extends AppCompatActivity {
                 0,
                 dp(6)
         );
-
 
         card.addView(
                 studentNameText
@@ -331,7 +371,6 @@ public class RegistrationsActivity extends AppCompatActivity {
                                 studentEmail
                 );
 
-
         card.addView(
                 emailText
         );
@@ -347,7 +386,6 @@ public class RegistrationsActivity extends AppCompatActivity {
                                 eventName
                 );
 
-
         eventText.setTextColor(
                 Color.rgb(
                         50,
@@ -356,15 +394,58 @@ public class RegistrationsActivity extends AppCompatActivity {
                 )
         );
 
-
         eventText.setTypeface(
                 null,
                 Typeface.BOLD
         );
 
-
         card.addView(
                 eventText
+        );
+
+
+        // =================================================
+        // REGISTRATION COUNT
+        // =================================================
+
+        int registeredCount =
+                databaseHelper.getEventRegistrationCount(
+                        eventId
+                );
+
+        int maxRegistrations =
+                databaseHelper.getEventMaxRegistrations(
+                        eventId
+                );
+
+
+        TextView registrationCountText =
+                createDetailText(
+                        "Registrations: " +
+                                registeredCount +
+                                " / " +
+                                maxRegistrations
+                );
+
+        registrationCountText.setTextColor(
+                Color.rgb(
+                        107,
+                        77,
+                        181
+                )
+        );
+
+        registrationCountText.setTypeface(
+                null,
+                Typeface.BOLD
+        );
+
+        registrationCountText.setTextSize(
+                14
+        );
+
+        card.addView(
+                registrationCountText
         );
 
 
@@ -377,7 +458,6 @@ public class RegistrationsActivity extends AppCompatActivity {
                         "Date: " +
                                 eventDate
                 );
-
 
         card.addView(
                 dateText
@@ -394,7 +474,6 @@ public class RegistrationsActivity extends AppCompatActivity {
                                 eventTime
                 );
 
-
         card.addView(
                 timeText
         );
@@ -409,7 +488,6 @@ public class RegistrationsActivity extends AppCompatActivity {
                         "Venue: " +
                                 venue
                 );
-
 
         card.addView(
                 venueText
@@ -426,16 +504,13 @@ public class RegistrationsActivity extends AppCompatActivity {
                                 registrationId
                 );
 
-
         registrationIdText.setTextSize(
                 11
         );
 
-
         registrationIdText.setTextColor(
                 Color.GRAY
         );
-
 
         registrationIdText.setPadding(
                 0,
@@ -443,7 +518,6 @@ public class RegistrationsActivity extends AppCompatActivity {
                 0,
                 0
         );
-
 
         card.addView(
                 registrationIdText
@@ -457,16 +531,13 @@ public class RegistrationsActivity extends AppCompatActivity {
         TextView registeredLabel =
                 new TextView(this);
 
-
         registeredLabel.setText(
                 "✓  REGISTERED"
         );
 
-
         registeredLabel.setTextSize(
                 12
         );
-
 
         registeredLabel.setTextColor(
                 Color.rgb(
@@ -476,21 +547,22 @@ public class RegistrationsActivity extends AppCompatActivity {
                 )
         );
 
-
         registeredLabel.setTypeface(
                 null,
                 Typeface.BOLD
         );
-
 
         registeredLabel.setGravity(
                 Gravity.CENTER
         );
 
 
+        // =================================================
+        // REGISTERED LABEL BACKGROUND
+        // =================================================
+
         GradientDrawable registeredBackground =
                 new GradientDrawable();
-
 
         registeredBackground.setColor(
                 Color.rgb(
@@ -500,23 +572,24 @@ public class RegistrationsActivity extends AppCompatActivity {
                 )
         );
 
-
         registeredBackground.setCornerRadius(
                 dp(20)
         );
-
 
         registeredLabel.setBackground(
                 registeredBackground
         );
 
 
+        // =================================================
+        // REGISTERED LABEL SIZE
+        // =================================================
+
         LinearLayout.LayoutParams labelParams =
                 new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.WRAP_CONTENT,
                         dp(32)
                 );
-
 
         labelParams.setMargins(
                 0,
@@ -525,11 +598,9 @@ public class RegistrationsActivity extends AppCompatActivity {
                 0
         );
 
-
         registeredLabel.setLayoutParams(
                 labelParams
         );
-
 
         registeredLabel.setPadding(
                 dp(12),
@@ -561,20 +632,16 @@ public class RegistrationsActivity extends AppCompatActivity {
     private TextView createDetailText(
             String text) {
 
-
         TextView textView =
                 new TextView(this);
-
 
         textView.setText(
                 text
         );
 
-
         textView.setTextSize(
                 13
         );
-
 
         textView.setTextColor(
                 Color.rgb(
@@ -584,14 +651,12 @@ public class RegistrationsActivity extends AppCompatActivity {
                 )
         );
 
-
         textView.setPadding(
                 0,
                 dp(3),
                 0,
                 dp(3)
         );
-
 
         return textView;
     }
@@ -603,20 +668,19 @@ public class RegistrationsActivity extends AppCompatActivity {
 
     private void showNoRegistrations() {
 
-
         TextView noRegistrations =
                 new TextView(this);
 
-
         noRegistrations.setText(
-                "📋\n\nNo registrations yet.\nStudents who register for events will appear here."
+                "📋\n\n" +
+                        "No registrations yet.\n" +
+                        "Students who register for events " +
+                        "will appear here."
         );
-
 
         noRegistrations.setTextSize(
                 17
         );
-
 
         noRegistrations.setTextColor(
                 Color.rgb(
@@ -626,11 +690,9 @@ public class RegistrationsActivity extends AppCompatActivity {
                 )
         );
 
-
         noRegistrations.setGravity(
                 Gravity.CENTER
         );
-
 
         noRegistrations.setPadding(
                 dp(25),
@@ -638,7 +700,6 @@ public class RegistrationsActivity extends AppCompatActivity {
                 dp(25),
                 dp(30)
         );
-
 
         registrationsContainer.addView(
                 noRegistrations
@@ -654,7 +715,6 @@ public class RegistrationsActivity extends AppCompatActivity {
     protected void onResume() {
 
         super.onResume();
-
 
         if (databaseHelper != null &&
                 registrationsContainer != null) {
