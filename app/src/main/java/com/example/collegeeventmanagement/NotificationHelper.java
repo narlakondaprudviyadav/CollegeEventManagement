@@ -1,8 +1,10 @@
 package com.example.collegeeventmanagement;
 
+import android.Manifest;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Build;
 
 import androidx.core.app.NotificationCompat;
@@ -10,135 +12,250 @@ import androidx.core.app.NotificationManagerCompat;
 
 public class NotificationHelper {
 
-    public static final String CHANNEL_ID =
-            "event_reminder_channel";
+
+    // =====================================================
+    // CHANNEL
+    // =====================================================
+
+    private static final String CHANNEL_ID =
+            "college_event_reminders";
+
 
     private static final String CHANNEL_NAME =
-            "Event Reminders";
+            "College Event Reminders";
 
-    private static final String CHANNEL_DESCRIPTION =
-            "Notifications for upcoming college events";
+
+    // =====================================================
+    // NOTIFICATION ID BASE
+    // =====================================================
+
+    private static final int NOTIFICATION_BASE =
+            10000;
 
 
     // =====================================================
     // CREATE NOTIFICATION CHANNEL
     // =====================================================
 
-    public static void createNotificationChannel(Context context) {
+    public static void createNotificationChannel(
+            Context context) {
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+        if (Build.VERSION.SDK_INT >=
+                Build.VERSION_CODES.O) {
+
 
             NotificationChannel channel =
                     new NotificationChannel(
                             CHANNEL_ID,
                             CHANNEL_NAME,
-                            NotificationManager.IMPORTANCE_HIGH
+                            NotificationManager
+                                    .IMPORTANCE_HIGH
                     );
 
-            channel.setDescription(CHANNEL_DESCRIPTION);
+
+            channel.setDescription(
+                    "Automatic reminders for registered college events"
+            );
+
+
+            channel.enableVibration(
+                    true
+            );
+
+
+            channel.setShowBadge(
+                    true
+            );
+
 
             NotificationManager manager =
                     context.getSystemService(
                             NotificationManager.class
                     );
 
+
             if (manager != null) {
-                manager.createNotificationChannel(channel);
+
+                manager.createNotificationChannel(
+                        channel
+                );
             }
         }
     }
 
 
     // =====================================================
-    // SHOW 1 HOUR REMINDER
+    // CHECK NOTIFICATION PERMISSION
+    // =====================================================
+
+    private static boolean canNotify(
+            Context context) {
+
+
+        if (Build.VERSION.SDK_INT >=
+                Build.VERSION_CODES.TIRAMISU) {
+
+
+            return context.checkSelfPermission(
+                    Manifest.permission.POST_NOTIFICATIONS
+            ) == PackageManager.PERMISSION_GRANTED;
+        }
+
+
+        return true;
+    }
+
+
+    // =====================================================
+    // 1 HOUR REMINDER
     // =====================================================
 
     public static void showOneHourReminder(
             Context context,
+            int eventId,
             String eventName,
             String eventDate,
             String eventTime,
-            String venue,
-            int notificationId) {
+            String venue) {
+
+
+        if (!canNotify(context)) {
+            return;
+        }
+
+
+        String title =
+                "Event in 1 Hour";
+
+
+        String message =
+                eventName +
+                        " is starting in 1 hour.\n" +
+                        "Time: " +
+                        eventTime +
+                        "\nVenue: " +
+                        venue;
+
 
         showNotification(
                 context,
-                "Event Reminder",
-                eventName + " starts in 1 hour",
-                eventName,
-                eventDate,
-                eventTime,
-                venue,
-                notificationId
+                eventId,
+                1,
+                title,
+                message
         );
     }
 
 
     // =====================================================
-    // SHOW 5 MINUTE REMINDER
+    // 5 MINUTE REMINDER
     // =====================================================
 
     public static void showFiveMinuteReminder(
             Context context,
+            int eventId,
             String eventName,
             String eventDate,
             String eventTime,
-            String venue,
-            int notificationId) {
+            String venue) {
+
+
+        if (!canNotify(context)) {
+            return;
+        }
+
+
+        String title =
+                "Event in 5 Minutes";
+
+
+        String message =
+                eventName +
+                        " starts in 5 minutes.\n" +
+                        "Time: " +
+                        eventTime +
+                        "\nVenue: " +
+                        venue;
+
 
         showNotification(
                 context,
-                "Event Reminder",
-                eventName + " starts in 5 minutes",
-                eventName,
-                eventDate,
-                eventTime,
-                venue,
-                notificationId
+                eventId,
+                2,
+                title,
+                message
         );
     }
 
 
     // =====================================================
-    // SHOW EVENT STARTED NOTIFICATION
+    // EVENT STARTED
     // =====================================================
 
     public static void showEventStartedNotification(
             Context context,
+            int eventId,
             String eventName,
             String eventDate,
             String eventTime,
-            String venue,
-            int notificationId) {
+            String venue) {
+
+
+        if (!canNotify(context)) {
+            return;
+        }
+
+
+        String title =
+                "Event Started";
+
+
+        String message =
+                eventName +
+                        " has started.\n" +
+                        "Event: " +
+                        eventName +
+                        "\nDate: " +
+                        eventDate +
+                        "\nTime: " +
+                        eventTime +
+                        "\nVenue: " +
+                        venue;
+
 
         showNotification(
                 context,
-                "Event Started",
-                eventName + " has started",
-                eventName,
-                eventDate,
-                eventTime,
-                venue,
-                notificationId
+                eventId,
+                3,
+                title,
+                message
         );
     }
 
 
     // =====================================================
-    // COMMON NOTIFICATION METHOD
+    // SHOW NOTIFICATION
     // =====================================================
 
     private static void showNotification(
             Context context,
+            int eventId,
+            int reminderType,
             String title,
-            String shortText,
-            String eventName,
-            String eventDate,
-            String eventTime,
-            String venue,
-            int notificationId) {
+            String message) {
 
-        createNotificationChannel(context);
+
+        createNotificationChannel(
+                context
+        );
+
+
+        int notificationId =
+                NOTIFICATION_BASE +
+                        (eventId * 10) +
+                        reminderType;
+
 
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(
@@ -146,52 +263,60 @@ public class NotificationHelper {
                         CHANNEL_ID
                 );
 
+
         builder.setSmallIcon(
-                android.R.drawable.ic_dialog_info
+                R.drawable.ic_notifications
         );
 
-        builder.setContentTitle(title);
 
-        builder.setContentText(shortText);
+        builder.setContentTitle(
+                title
+        );
+
+
+        builder.setContentText(
+                message
+        );
+
 
         builder.setStyle(
                 new NotificationCompat.BigTextStyle()
-                        .bigText(
-                                shortText +
-                                        "\n\nEvent: " +
-                                        eventName +
-                                        "\nDate: " +
-                                        eventDate +
-                                        "\nTime: " +
-                                        eventTime +
-                                        "\nVenue: " +
-                                        venue
-                        )
+                        .bigText(message)
         );
+
 
         builder.setPriority(
                 NotificationCompat.PRIORITY_HIGH
         );
 
-        builder.setAutoCancel(true);
+
+        builder.setCategory(
+                NotificationCompat.CATEGORY_EVENT
+        );
+
+
+        builder.setAutoCancel(
+                true
+        );
+
 
         builder.setDefaults(
                 NotificationCompat.DEFAULT_ALL
         );
 
-        NotificationManagerCompat manager =
-                NotificationManagerCompat.from(context);
 
         try {
 
-            manager.notify(
-                    notificationId,
-                    builder.build()
-            );
+            NotificationManagerCompat
+                    .from(context)
+                    .notify(
+                            notificationId,
+                            builder.build()
+                    );
 
         } catch (SecurityException e) {
 
-            // Notification permission not granted
+            e.printStackTrace();
         }
     }
 }

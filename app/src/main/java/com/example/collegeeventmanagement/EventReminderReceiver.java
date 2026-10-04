@@ -7,10 +7,17 @@ import android.content.Intent;
 public class EventReminderReceiver
         extends BroadcastReceiver {
 
+
     @Override
     public void onReceive(
             Context context,
             Intent intent) {
+
+
+        if (intent == null) {
+            return;
+        }
+
 
         // =================================================
         // GET EVENT DETAILS
@@ -19,33 +26,38 @@ public class EventReminderReceiver
         int eventId =
                 intent.getIntExtra(
                         "EVENT_ID",
-                        0
+                        -1
                 );
+
 
         String eventName =
                 intent.getStringExtra(
                         "EVENT_NAME"
                 );
 
+
         String eventDate =
                 intent.getStringExtra(
                         "EVENT_DATE"
                 );
+
 
         String eventTime =
                 intent.getStringExtra(
                         "EVENT_TIME"
                 );
 
+
         String venue =
                 intent.getStringExtra(
                         "VENUE"
                 );
 
+
         int reminderType =
                 intent.getIntExtra(
                         "REMINDER_TYPE",
-                        0
+                        -1
                 );
 
 
@@ -53,65 +65,103 @@ public class EventReminderReceiver
         // DEFAULT VALUES
         // =================================================
 
-        if (eventName == null) {
+        if (eventName == null ||
+                eventName.trim().isEmpty()) {
+
             eventName = "College Event";
         }
+
 
         if (eventDate == null) {
             eventDate = "";
         }
 
+
         if (eventTime == null) {
             eventTime = "";
         }
 
-        if (venue == null) {
-            venue = "";
+
+        if (venue == null ||
+                venue.trim().isEmpty()) {
+
+            venue = "College Campus";
         }
 
 
         // =================================================
-        // SHOW CORRECT NOTIFICATION
+        // CREATE NOTIFICATION CHANNEL
         // =================================================
 
-        if (reminderType == 1) {
+        NotificationHelper.createNotificationChannel(
+                context
+        );
 
+
+        // =================================================
+        // REMINDER TYPE
+        // =================================================
+
+        switch (reminderType) {
+
+
+            // =============================================
             // 1 HOUR BEFORE
+            // =============================================
 
-            NotificationHelper.showOneHourReminder(
-                    context,
-                    eventName,
-                    eventDate,
-                    eventTime,
-                    venue,
-                    eventId * 10 + 1
-            );
+            case 1:
 
-        } else if (reminderType == 2) {
+                NotificationHelper.showOneHourReminder(
+                        context,
+                        eventId,
+                        eventName,
+                        eventDate,
+                        eventTime,
+                        venue
+                );
 
+                break;
+
+
+            // =============================================
             // 5 MINUTES BEFORE
+            // =============================================
 
-            NotificationHelper.showFiveMinuteReminder(
-                    context,
-                    eventName,
-                    eventDate,
-                    eventTime,
-                    venue,
-                    eventId * 10 + 2
-            );
+            case 2:
 
-        } else if (reminderType == 3) {
+                NotificationHelper.showFiveMinuteReminder(
+                        context,
+                        eventId,
+                        eventName,
+                        eventDate,
+                        eventTime,
+                        venue
+                );
 
+                break;
+
+
+            // =============================================
             // EVENT STARTED
+            // =============================================
 
-            NotificationHelper.showEventStartedNotification(
-                    context,
-                    eventName,
-                    eventDate,
-                    eventTime,
-                    venue,
-                    eventId * 10 + 3
-            );
+            case 3:
+
+                NotificationHelper.showEventStartedNotification(
+                        context,
+                        eventId,
+                        eventName,
+                        eventDate,
+                        eventTime,
+                        venue
+                );
+
+                break;
+
+
+            default:
+
+                break;
         }
     }
 }

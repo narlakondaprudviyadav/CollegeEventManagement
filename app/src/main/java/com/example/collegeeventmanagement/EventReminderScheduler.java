@@ -21,7 +21,7 @@ public class EventReminderScheduler {
 
 
     // =====================================================
-    // SCHEDULE ALL 3 NOTIFICATIONS
+    // SCHEDULE ALL REMINDERS
     // =====================================================
 
     public static void scheduleReminder(
@@ -46,7 +46,9 @@ public class EventReminderScheduler {
 
             eventDateTime =
                     format.parse(
-                            eventDate + " " + eventTime
+                            eventDate +
+                                    " " +
+                                    eventTime
                     );
 
         } catch (ParseException e) {
@@ -55,12 +57,27 @@ public class EventReminderScheduler {
             return;
         }
 
+
         if (eventDateTime == null) {
             return;
         }
 
+
         long eventTimeMillis =
                 eventDateTime.getTime();
+
+        long currentTimeMillis =
+                System.currentTimeMillis();
+
+
+        // =================================================
+        // EVENT ALREADY STARTED
+        // =================================================
+
+        if (eventTimeMillis <= currentTimeMillis) {
+
+            return;
+        }
 
 
         // =================================================
@@ -68,18 +85,24 @@ public class EventReminderScheduler {
         // =================================================
 
         long oneHourBefore =
-                eventTimeMillis - ONE_HOUR;
+                eventTimeMillis -
+                        ONE_HOUR;
 
-        scheduleAlarm(
-                context,
-                eventId,
-                eventName,
-                eventDate,
-                eventTime,
-                venue,
-                oneHourBefore,
-                1
-        );
+
+        if (oneHourBefore >
+                currentTimeMillis) {
+
+            scheduleAlarm(
+                    context,
+                    eventId,
+                    eventName,
+                    eventDate,
+                    eventTime,
+                    venue,
+                    oneHourBefore,
+                    1
+            );
+        }
 
 
         // =================================================
@@ -87,18 +110,57 @@ public class EventReminderScheduler {
         // =================================================
 
         long fiveMinutesBefore =
-                eventTimeMillis - FIVE_MINUTES;
+                eventTimeMillis -
+                        FIVE_MINUTES;
 
-        scheduleAlarm(
-                context,
-                eventId,
-                eventName,
-                eventDate,
-                eventTime,
-                venue,
-                fiveMinutesBefore,
-                2
-        );
+
+        /*
+         * Normal case:
+         *
+         * Event is more than 5 minutes away.
+         * Schedule the reminder exactly 5 minutes before.
+         */
+
+        if (fiveMinutesBefore >
+                currentTimeMillis) {
+
+            scheduleAlarm(
+                    context,
+                    eventId,
+                    eventName,
+                    eventDate,
+                    eventTime,
+                    venue,
+                    fiveMinutesBefore,
+                    2
+            );
+
+        }
+
+        /*
+         * Event is already within the next 5 minutes.
+         *
+         * Instead of silently losing the 5-minute
+         * reminder, trigger it almost immediately.
+         */
+
+        else {
+
+            long immediateReminder =
+                    currentTimeMillis + 1000L;
+
+
+            scheduleAlarm(
+                    context,
+                    eventId,
+                    eventName,
+                    eventDate,
+                    eventTime,
+                    venue,
+                    immediateReminder,
+                    2
+            );
+        }
 
 
         // =================================================
@@ -132,19 +194,13 @@ public class EventReminderScheduler {
             long triggerTime,
             int reminderType) {
 
-        // -------------------------------------------------
-        // Don't schedule past alarms
-        // -------------------------------------------------
-
-        if (triggerTime <= System.currentTimeMillis()) {
-            return;
-        }
-
 
         AlarmManager alarmManager =
-                (AlarmManager) context.getSystemService(
-                        Context.ALARM_SERVICE
-                );
+                (AlarmManager)
+                        context.getSystemService(
+                                Context.ALARM_SERVICE
+                        );
+
 
         if (alarmManager == null) {
             return;
@@ -160,6 +216,7 @@ public class EventReminderScheduler {
                         context,
                         EventReminderReceiver.class
                 );
+
 
         intent.putExtra(
                 "EVENT_ID",
@@ -197,7 +254,8 @@ public class EventReminderScheduler {
         // =================================================
 
         int requestCode =
-                eventId * 10 + reminderType;
+                eventId * 10 +
+                        reminderType;
 
 
         PendingIntent pendingIntent =
@@ -205,18 +263,21 @@ public class EventReminderScheduler {
                         context,
                         requestCode,
                         intent,
-                        PendingIntent.FLAG_UPDATE_CURRENT
-                                | PendingIntent.FLAG_IMMUTABLE
+                        PendingIntent.FLAG_UPDATE_CURRENT |
+                                PendingIntent.FLAG_IMMUTABLE
                 );
 
 
         // =================================================
-        // USE EXACT ALARM WHEN AVAILABLE
+        // EXACT ALARM
         // =================================================
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        if (Build.VERSION.SDK_INT >=
+                Build.VERSION_CODES.S) {
+
 
             if (alarmManager.canScheduleExactAlarms()) {
+
 
                 alarmManager.setExactAndAllowWhileIdle(
                         AlarmManager.RTC_WAKEUP,
@@ -224,9 +285,15 @@ public class EventReminderScheduler {
                         pendingIntent
                 );
 
+
             } else {
 
-                // Fall back to inexact alarm
+
+                /*
+                 * Exact alarm permission is not available.
+                 *
+                 * Use the best possible fallback.
+                 */
 
                 alarmManager.setAndAllowWhileIdle(
                         AlarmManager.RTC_WAKEUP,
@@ -235,7 +302,9 @@ public class EventReminderScheduler {
                 );
             }
 
+
         } else {
+
 
             alarmManager.setExactAndAllowWhileIdle(
                     AlarmManager.RTC_WAKEUP,
@@ -247,26 +316,27 @@ public class EventReminderScheduler {
 
 
     // =====================================================
-    // CANCEL ALL REMINDERS FOR AN EVENT
+    // CANCEL ALL REMINDERS
     // =====================================================
 
     public static void cancelReminders(
             Context context,
             int eventId) {
 
+
         AlarmManager alarmManager =
-                (AlarmManager) context.getSystemService(
-                        Context.ALARM_SERVICE
-                );
+                (AlarmManager)
+                        context.getSystemService(
+                                Context.ALARM_SERVICE
+                        );
+
 
         if (alarmManager == null) {
             return;
         }
 
 
-        // =================================================
-        // CANCEL 1 HOUR REMINDER
-        // =================================================
+        // 1 HOUR
 
         cancelOneReminder(
                 context,
@@ -276,9 +346,7 @@ public class EventReminderScheduler {
         );
 
 
-        // =================================================
-        // CANCEL 5 MINUTE REMINDER
-        // =================================================
+        // 5 MINUTES
 
         cancelOneReminder(
                 context,
@@ -288,9 +356,7 @@ public class EventReminderScheduler {
         );
 
 
-        // =================================================
-        // CANCEL EVENT START REMINDER
-        // =================================================
+        // EVENT START
 
         cancelOneReminder(
                 context,
@@ -312,15 +378,12 @@ public class EventReminderScheduler {
             int reminderType) {
 
 
-        // =================================================
-        // CREATE SAME INTENT
-        // =================================================
-
         Intent intent =
                 new Intent(
                         context,
                         EventReminderReceiver.class
                 );
+
 
         intent.putExtra(
                 "EVENT_ID",
@@ -333,40 +396,25 @@ public class EventReminderScheduler {
         );
 
 
-        // =================================================
-        // USE SAME REQUEST CODE
-        // =================================================
-
         int requestCode =
-                eventId * 10 + reminderType;
+                eventId * 10 +
+                        reminderType;
 
-
-        // =================================================
-        // FIND EXISTING PENDING INTENT
-        // =================================================
 
         PendingIntent pendingIntent =
                 PendingIntent.getBroadcast(
                         context,
                         requestCode,
                         intent,
-                        PendingIntent.FLAG_UPDATE_CURRENT
-                                | PendingIntent.FLAG_IMMUTABLE
+                        PendingIntent.FLAG_UPDATE_CURRENT |
+                                PendingIntent.FLAG_IMMUTABLE
                 );
 
-
-        // =================================================
-        // CANCEL ALARM
-        // =================================================
 
         alarmManager.cancel(
                 pendingIntent
         );
 
-
-        // =================================================
-        // CANCEL PENDING INTENT
-        // =================================================
 
         pendingIntent.cancel();
     }
