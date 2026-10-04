@@ -2,30 +2,40 @@
 
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="#F8F6FC">
 
-    <!-- ========================= -->
+
+    <!-- ================================================= -->
     <!-- TOP BAR -->
-    <!-- ========================= -->
+    <!-- ================================================= -->
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="72dp"
         android:orientation="vertical"
         android:background="#6E4BBC"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:paddingTop="10dp"
-        android:paddingBottom="8dp">
+        android:paddingStart="8dp"
+        android:paddingEnd="12dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp">
+
+
+        <!-- ================================================= -->
+        <!-- TITLE ROW -->
+        <!-- ================================================= -->
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:orientation="horizontal"
             android:gravity="center_vertical">
+
+
+            <!-- BACK BUTTON -->
 
             <ImageButton
                 android:id="@+id/backButton"
@@ -33,9 +43,15 @@
                 android:layout_height="48dp"
                 android:background="@android:color/transparent"
                 android:src="@drawable/ic_arrow_back"
+                app:tint="@android:color/white"
                 android:contentDescription="Back to dashboard"
                 android:clickable="true"
-                android:focusable="true"/>
+                android:focusable="true"
+                android:padding="10dp" />
+
+
+            <!-- TITLE -->
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -43,9 +59,14 @@
                 android:textColor="@android:color/white"
                 android:textSize="22sp"
                 android:textStyle="bold"
-                android:layout_marginStart="8dp"/>
+                android:layout_marginStart="6dp" />
 
         </LinearLayout>
+
+
+        <!-- ================================================= -->
+        <!-- SUBTITLE -->
+        <!-- ================================================= -->
 
         <TextView
             android:layout_width="match_parent"
@@ -53,27 +74,189 @@
             android:text="Events you have registered for"
             android:textColor="#EDE7F6"
             android:textSize="12sp"
-            android:layout_marginStart="48dp"/>
+            android:layout_marginStart="54dp"
+            android:layout_marginTop="-2dp" />
 
     </LinearLayout>
 
 
-    <!-- ========================= -->
+    <!-- ================================================= -->
     <!-- EVENTS LIST -->
-    <!-- ========================= -->
+    <!-- ================================================= -->
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true">
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true"
+        android:scrollbars="vertical">
 
         <LinearLayout
             android:id="@+id/eventsContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="12dp"/>
+            android:padding="12dp"
+            android:paddingBottom="24dp" />
 
     </ScrollView>
+
+
+    <!-- ================================================= -->
+    <!-- STUDENT BOTTOM NAVIGATION -->
+    <!-- ================================================= -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:background="@android:color/white"
+        android:elevation="10dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp">
+
+
+        <!-- ================================================= -->
+        <!-- HOME -->
+        <!-- ================================================= -->
+
+        <LinearLayout
+            android:id="@+id/navHome"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackgroundBorderless">
+
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_home"
+                android:contentDescription="Home"
+                app:tint="#777777" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Home"
+                android:textSize="11sp"
+                android:textColor="#777777"
+                android:layout_marginTop="3dp" />
+
+        </LinearLayout>
+
+
+        <!-- ================================================= -->
+        <!-- EVENTS -->
+        <!-- ================================================= -->
+
+        <LinearLayout
+            android:id="@+id/navEvents"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackgroundBorderless">
+
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_event"
+                android:contentDescription="Events"
+                app:tint="#777777" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Events"
+                android:textSize="11sp"
+                android:textColor="#777777"
+                android:layout_marginTop="3dp" />
+
+        </LinearLayout>
+
+
+        <!-- ================================================= -->
+        <!-- MY EVENTS -->
+        <!-- ================================================= -->
+
+        <LinearLayout
+            android:id="@+id/navMyEvents"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackgroundBorderless">
+
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_confirmation"
+                android:contentDescription="My Events"
+                app:tint="#6E4BBC" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="My Events"
+                android:textSize="11sp"
+                android:textColor="#6E4BBC"
+                android:textStyle="bold"
+                android:layout_marginTop="3dp" />
+
+        </LinearLayout>
+
+
+        <!-- ================================================= -->
+        <!-- PROFILE -->
+        <!-- ================================================= -->
+
+        <LinearLayout
+            android:id="@+id/navProfile"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackgroundBorderless">
+
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_person"
+                android:contentDescription="Profile"
+                app:tint="#777777" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Profile"
+                android:textSize="11sp"
+                android:textColor="#777777"
+                android:layout_marginTop="3dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
 
 </LinearLayout>

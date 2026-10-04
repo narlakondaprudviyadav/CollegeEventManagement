@@ -24,13 +24,23 @@ import java.util.Locale;
 
 public class MyEventsActivity extends AppCompatActivity {
 
-    LinearLayout eventsContainer;
-    ImageButton backButton;
+    private LinearLayout eventsContainer;
+    private ImageButton backButton;
 
-    DatabaseHelper databaseHelper;
+    private DatabaseHelper databaseHelper;
 
-    String studentEmail;
-    String studentName;
+    private String studentEmail;
+    private String studentName;
+
+
+    // =====================================================
+    // STUDENT BOTTOM NAVIGATION
+    // =====================================================
+
+    private LinearLayout navHome;
+    private LinearLayout navEvents;
+    private LinearLayout navMyEvents;
+    private LinearLayout navProfile;
 
 
     @Override
@@ -38,7 +48,9 @@ public class MyEventsActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_my_events);
+        setContentView(
+                R.layout.activity_my_events
+        );
 
 
         // =====================================================
@@ -71,12 +83,20 @@ public class MyEventsActivity extends AppCompatActivity {
                 getIntent().getStringExtra("USER_NAME");
 
 
+        // =====================================================
+        // DEFAULT STUDENT NAME
+        // =====================================================
+
         if (studentName == null ||
                 studentName.trim().isEmpty()) {
 
             studentName = "Student";
         }
 
+
+        // =====================================================
+        // DEFAULT EMAIL
+        // =====================================================
 
         if (studentEmail == null) {
 
@@ -85,14 +105,44 @@ public class MyEventsActivity extends AppCompatActivity {
 
 
         // =====================================================
+        // BOTTOM NAVIGATION
+        // =====================================================
+
+        navHome =
+                findViewById(R.id.navHome);
+
+        navEvents =
+                findViewById(R.id.navEvents);
+
+        navMyEvents =
+                findViewById(R.id.navMyEvents);
+
+        navProfile =
+                findViewById(R.id.navProfile);
+
+
+        // =====================================================
+        // SETUP REUSABLE STUDENT NAVIGATION
+        // =====================================================
+
+        StudentBottomNavHelper.setup(
+                this,
+                navHome,
+                navEvents,
+                navMyEvents,
+                navProfile,
+                studentName,
+                studentEmail
+        );
+
+
+        // =====================================================
         // BACK BUTTON
         // =====================================================
 
-        backButton.setOnClickListener(v -> {
-
-            goToStudentDashboard();
-
-        });
+        backButton.setOnClickListener(v ->
+                goToStudentDashboard()
+        );
 
 
         // =====================================================
@@ -107,14 +157,13 @@ public class MyEventsActivity extends AppCompatActivity {
                     public void handleOnBackPressed() {
 
                         goToStudentDashboard();
-
                     }
                 }
         );
 
 
         // =====================================================
-        // LOAD EVENTS
+        // LOAD MY EVENTS
         // =====================================================
 
         loadMyEvents();
@@ -203,6 +252,7 @@ public class MyEventsActivity extends AppCompatActivity {
                     "You have not registered for any events yet."
             );
 
+
             if (cursor != null) {
 
                 cursor.close();
@@ -218,11 +268,6 @@ public class MyEventsActivity extends AppCompatActivity {
 
         while (cursor.moveToNext()) {
 
-
-            // =================================================
-            // EVENT ID
-            // =================================================
-
             int eventId =
                     cursor.getInt(
                             cursor.getColumnIndexOrThrow(
@@ -230,10 +275,6 @@ public class MyEventsActivity extends AppCompatActivity {
                             )
                     );
 
-
-            // =================================================
-            // EVENT DETAILS
-            // =================================================
 
             String eventName =
                     cursor.getString(
@@ -305,7 +346,6 @@ public class MyEventsActivity extends AppCompatActivity {
                     LinearLayout.VERTICAL
             );
 
-
             card.setPadding(
                     dp(18),
                     dp(17),
@@ -331,17 +371,17 @@ public class MyEventsActivity extends AppCompatActivity {
 
             cardBackground.setStroke(
                     dp(1),
-                    Color.rgb(235, 231, 242)
+                    Color.rgb(
+                            235,
+                            231,
+                            242
+                    )
             );
 
             card.setBackground(
                     cardBackground
             );
 
-
-            // =================================================
-            // CARD ELEVATION
-            // =================================================
 
             card.setElevation(
                     dp(4)
@@ -384,7 +424,11 @@ public class MyEventsActivity extends AppCompatActivity {
             );
 
             nameView.setTextColor(
-                    Color.rgb(107, 77, 181)
+                    Color.rgb(
+                            107,
+                            77,
+                            181
+                    )
             );
 
             nameView.setTypeface(
@@ -421,7 +465,11 @@ public class MyEventsActivity extends AppCompatActivity {
             );
 
             descriptionView.setTextColor(
-                    Color.rgb(90, 90, 90)
+                    Color.rgb(
+                            90,
+                            90,
+                            90
+                    )
             );
 
             descriptionView.setPadding(
@@ -438,7 +486,7 @@ public class MyEventsActivity extends AppCompatActivity {
 
 
             // =================================================
-            // DETAILS CONTAINER
+            // DETAILS
             // =================================================
 
             LinearLayout detailsLayout =
@@ -449,20 +497,12 @@ public class MyEventsActivity extends AppCompatActivity {
             );
 
 
-            // =================================================
-            // DATE
-            // =================================================
-
             detailsLayout.addView(
                     createDetailText(
                             "📅  " + date
                     )
             );
 
-
-            // =================================================
-            // TIME
-            // =================================================
 
             detailsLayout.addView(
                     createDetailText(
@@ -471,20 +511,12 @@ public class MyEventsActivity extends AppCompatActivity {
             );
 
 
-            // =================================================
-            // VENUE
-            // =================================================
-
             detailsLayout.addView(
                     createDetailText(
                             "📍  " + venue
                     )
             );
 
-
-            // =================================================
-            // ORGANIZER
-            // =================================================
 
             detailsLayout.addView(
                     createDetailText(
@@ -550,7 +582,11 @@ public class MyEventsActivity extends AppCompatActivity {
             );
 
             registeredText.setTextColor(
-                    Color.rgb(46, 125, 50)
+                    Color.rgb(
+                            46,
+                            125,
+                            50
+                    )
             );
 
             registeredText.setTypeface(
@@ -570,20 +606,21 @@ public class MyEventsActivity extends AppCompatActivity {
             );
 
 
-            // =================================================
-            // REGISTERED BADGE BACKGROUND
-            // =================================================
-
             GradientDrawable registeredBackground =
                     new GradientDrawable();
 
             registeredBackground.setColor(
-                    Color.rgb(232, 245, 233)
+                    Color.rgb(
+                            232,
+                            245,
+                            233
+                    )
             );
 
             registeredBackground.setCornerRadius(
                     dp(20)
             );
+
 
             registeredText.setBackground(
                     registeredBackground
@@ -635,7 +672,11 @@ public class MyEventsActivity extends AppCompatActivity {
                 );
 
                 deregisterButton.setTextColor(
-                        Color.rgb(198, 40, 40)
+                        Color.rgb(
+                                198,
+                                40,
+                                40
+                        )
                 );
 
                 deregisterButton.setTypeface(
@@ -654,7 +695,6 @@ public class MyEventsActivity extends AppCompatActivity {
                         0
                 );
 
-
                 deregisterButton.setMinHeight(
                         0
                 );
@@ -665,14 +705,18 @@ public class MyEventsActivity extends AppCompatActivity {
 
 
                 // =================================================
-                // DEREGISTER BUTTON BACKGROUND
+                // DEREGISTER BACKGROUND
                 // =================================================
 
                 GradientDrawable deregisterBackground =
                         new GradientDrawable();
 
                 deregisterBackground.setColor(
-                        Color.rgb(255, 245, 245)
+                        Color.rgb(
+                                255,
+                                245,
+                                245
+                        )
                 );
 
                 deregisterBackground.setCornerRadius(
@@ -681,7 +725,11 @@ public class MyEventsActivity extends AppCompatActivity {
 
                 deregisterBackground.setStroke(
                         dp(1),
-                        Color.rgb(211, 47, 47)
+                        Color.rgb(
+                                211,
+                                47,
+                                47
+                        )
                 );
 
 
@@ -714,14 +762,12 @@ public class MyEventsActivity extends AppCompatActivity {
                 // DEREGISTER CLICK
                 // =================================================
 
-                deregisterButton.setOnClickListener(v -> {
-
-                    showDeregisterConfirmation(
-                            eventId,
-                            eventName
-                    );
-
-                });
+                deregisterButton.setOnClickListener(v ->
+                        showDeregisterConfirmation(
+                                eventId,
+                                eventName
+                        )
+                );
 
 
                 card.addView(
@@ -796,7 +842,6 @@ public class MyEventsActivity extends AppCompatActivity {
             int eventId,
             String eventName) {
 
-
         new AlertDialog.Builder(this)
 
                 .setTitle(
@@ -838,7 +883,6 @@ public class MyEventsActivity extends AppCompatActivity {
             int eventId,
             String eventName) {
 
-
         boolean success =
                 databaseHelper.deregisterFromEvent(
                         eventId,
@@ -847,7 +891,6 @@ public class MyEventsActivity extends AppCompatActivity {
 
 
         if (success) {
-
 
             // =================================================
             // CANCEL REMINDERS
@@ -904,7 +947,11 @@ public class MyEventsActivity extends AppCompatActivity {
         );
 
         textView.setTextColor(
-                Color.rgb(80, 80, 80)
+                Color.rgb(
+                        80,
+                        80,
+                        80
+                )
         );
 
         textView.setPadding(
@@ -913,6 +960,7 @@ public class MyEventsActivity extends AppCompatActivity {
                 0,
                 dp(3)
         );
+
 
         return textView;
     }
@@ -937,7 +985,11 @@ public class MyEventsActivity extends AppCompatActivity {
         );
 
         noEvents.setTextColor(
-                Color.rgb(90, 90, 90)
+                Color.rgb(
+                        90,
+                        90,
+                        90
+                )
         );
 
         noEvents.setGravity(

@@ -33,46 +33,145 @@ public class BrowseEventsActivity extends AppCompatActivity {
     private String studentEmail;
     private String studentName;
 
+
+    // =========================
+    // BOTTOM NAVIGATION
+    // =========================
+
+    private LinearLayout navHome;
+    private LinearLayout navEvents;
+    private LinearLayout navMyEvents;
+    private LinearLayout navProfile;
+
+
     // =========================
     // COLORS
     // =========================
 
-    private final int PURPLE = Color.rgb(107, 77, 181);
-    private final int GREEN = Color.rgb(52, 168, 83);
-    private final int RED = Color.rgb(229, 57, 53);
+    private final int PURPLE =
+            Color.rgb(107, 77, 181);
 
-    private final int DARK_TEXT = Color.rgb(42, 35, 52);
-    private final int GRAY_TEXT = Color.rgb(100, 96, 105);
+    private final int GREEN =
+            Color.rgb(52, 168, 83);
+
+    private final int RED =
+            Color.rgb(229, 57, 53);
+
+    private final int DARK_TEXT =
+            Color.rgb(42, 35, 52);
+
+    private final int GRAY_TEXT =
+            Color.rgb(100, 96, 105);
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_browse_events);
+        setContentView(
+                R.layout.activity_browse_events
+        );
+
 
         // =========================
         // CONNECT VIEWS
         // =========================
 
-        eventsContainer = findViewById(R.id.eventsContainer);
-        backButton = findViewById(R.id.backButton);
+        eventsContainer =
+                findViewById(
+                        R.id.eventsContainer
+                );
+
+        backButton =
+                findViewById(
+                        R.id.backButton
+                );
+
+
+        // =========================
+        // BOTTOM NAVIGATION
+        // =========================
+
+        navHome =
+                findViewById(
+                        R.id.navHome
+                );
+
+        navEvents =
+                findViewById(
+                        R.id.navEvents
+                );
+
+        navMyEvents =
+                findViewById(
+                        R.id.navMyEvents
+                );
+
+        navProfile =
+                findViewById(
+                        R.id.navProfile
+                );
+
 
         // =========================
         // DATABASE
         // =========================
 
-        databaseHelper = new DatabaseHelper(this);
+        databaseHelper =
+                new DatabaseHelper(this);
+
 
         // =========================
         // GET STUDENT DETAILS
         // =========================
 
         studentEmail =
-                getIntent().getStringExtra("email");
+                getIntent().getStringExtra(
+                        "email"
+                );
 
         studentName =
-                getIntent().getStringExtra("USER_NAME");
+                getIntent().getStringExtra(
+                        "USER_NAME"
+                );
+
+
+        // =========================
+        // DEFAULT STUDENT NAME
+        // =========================
+
+        if (studentName == null ||
+                studentName.trim().isEmpty()) {
+
+            studentName = "Student";
+        }
+
+
+        // =========================
+        // DEFAULT EMAIL
+        // =========================
+
+        if (studentEmail == null) {
+
+            studentEmail = "";
+        }
+
+
+        // =====================================================
+        // REUSABLE STUDENT BOTTOM NAVIGATION
+        // =====================================================
+
+        StudentBottomNavHelper.setup(
+                this,
+                navHome,
+                navEvents,
+                navMyEvents,
+                navProfile,
+                studentName,
+                studentEmail
+        );
+
 
         // =========================
         // BACK BUTTON
@@ -83,17 +182,32 @@ public class BrowseEventsActivity extends AppCompatActivity {
         );
 
         backButton.setImageTintList(
-                ColorStateList.valueOf(Color.WHITE)
+                ColorStateList.valueOf(
+                        Color.WHITE
+                )
         );
 
-        backButton.setVisibility(View.VISIBLE);
-        backButton.setAlpha(1.0f);
-        backButton.setClickable(true);
-        backButton.setFocusable(true);
+        backButton.setVisibility(
+                View.VISIBLE
+        );
+
+        backButton.setAlpha(
+                1.0f
+        );
+
+        backButton.setClickable(
+                true
+        );
+
+        backButton.setFocusable(
+                true
+        );
+
 
         backButton.setOnClickListener(v ->
                 goToStudentDashboard()
         );
+
 
         // =========================
         // PHONE BACK BUTTON
@@ -110,6 +224,7 @@ public class BrowseEventsActivity extends AppCompatActivity {
                     }
                 }
         );
+
 
         // =========================
         // LOAD EVENTS
@@ -131,20 +246,24 @@ public class BrowseEventsActivity extends AppCompatActivity {
                         StudentDashboardActivity.class
                 );
 
+
         intent.putExtra(
                 "USER_NAME",
                 studentName
         );
+
 
         intent.putExtra(
                 "email",
                 studentEmail
         );
 
+
         intent.addFlags(
                 Intent.FLAG_ACTIVITY_CLEAR_TOP |
                         Intent.FLAG_ACTIVITY_SINGLE_TOP
         );
+
 
         startActivity(intent);
 
@@ -177,22 +296,31 @@ public class BrowseEventsActivity extends AppCompatActivity {
 
         eventsContainer.removeAllViews();
 
+
         Cursor cursor =
                 databaseHelper.getAllEvents();
+
 
         if (cursor == null ||
                 cursor.getCount() == 0) {
 
             showNoEvents();
 
+
             if (cursor != null) {
+
                 cursor.close();
             }
 
             return;
         }
 
+
         while (cursor.moveToNext()) {
+
+            // =========================
+            // EVENT ID
+            // =========================
 
             int eventId =
                     cursor.getInt(
@@ -201,12 +329,22 @@ public class BrowseEventsActivity extends AppCompatActivity {
                             )
                     );
 
+
+            // =========================
+            // EVENT NAME
+            // =========================
+
             String eventName =
                     cursor.getString(
                             cursor.getColumnIndexOrThrow(
                                     "event_name"
                             )
                     );
+
+
+            // =========================
+            // DESCRIPTION
+            // =========================
 
             String description =
                     cursor.getString(
@@ -215,12 +353,22 @@ public class BrowseEventsActivity extends AppCompatActivity {
                             )
                     );
 
+
+            // =========================
+            // EVENT DATE
+            // =========================
+
             String eventDate =
                     cursor.getString(
                             cursor.getColumnIndexOrThrow(
                                     "event_date"
                             )
                     );
+
+
+            // =========================
+            // EVENT TIME
+            // =========================
 
             String eventTime =
                     cursor.getString(
@@ -229,12 +377,22 @@ public class BrowseEventsActivity extends AppCompatActivity {
                             )
                     );
 
+
+            // =========================
+            // VENUE
+            // =========================
+
             String venue =
                     cursor.getString(
                             cursor.getColumnIndexOrThrow(
                                     "venue"
                             )
                     );
+
+
+            // =========================
+            // ORGANIZER
+            // =========================
 
             String organizer =
                     cursor.getString(
@@ -243,15 +401,26 @@ public class BrowseEventsActivity extends AppCompatActivity {
                             )
                     );
 
+
+            // =========================
+            // REGISTRATION COUNT
+            // =========================
+
             int registeredCount =
                     databaseHelper.getEventRegistrationCount(
                             eventId
                     );
 
+
+            // =========================
+            // MAX REGISTRATIONS
+            // =========================
+
             int maxRegistrations =
                     databaseHelper.getEventMaxRegistrations(
                             eventId
                     );
+
 
             addEventCard(
                     eventId,
@@ -265,6 +434,7 @@ public class BrowseEventsActivity extends AppCompatActivity {
                     maxRegistrations
             );
         }
+
 
         cursor.close();
     }
@@ -285,6 +455,7 @@ public class BrowseEventsActivity extends AppCompatActivity {
             int registeredCount,
             int maxRegistrations) {
 
+
         // =========================
         // CARD
         // =========================
@@ -302,6 +473,11 @@ public class BrowseEventsActivity extends AppCompatActivity {
                 dp(16),
                 dp(16)
         );
+
+
+        // =========================
+        // CARD BACKGROUND
+        // =========================
 
         GradientDrawable cardBackground =
                 new GradientDrawable();
@@ -326,6 +502,7 @@ public class BrowseEventsActivity extends AppCompatActivity {
         card.setElevation(
                 dp(3)
         );
+
 
         LinearLayout.LayoutParams cardParams =
                 new LinearLayout.LayoutParams(
@@ -360,18 +537,31 @@ public class BrowseEventsActivity extends AppCompatActivity {
                 Gravity.CENTER_VERTICAL
         );
 
+
         TextView nameView =
                 new TextView(this);
 
-        nameView.setText(eventName);
-        nameView.setTextSize(18);
-        nameView.setTextColor(DARK_TEXT);
+        nameView.setText(
+                eventName
+        );
+
+        nameView.setTextSize(
+                18
+        );
+
+        nameView.setTextColor(
+                DARK_TEXT
+        );
+
         nameView.setTypeface(
                 null,
                 Typeface.BOLD
         );
 
-        nameView.setMaxLines(2);
+        nameView.setMaxLines(
+                2
+        );
+
 
         LinearLayout.LayoutParams nameParams =
                 new LinearLayout.LayoutParams(
@@ -384,7 +574,9 @@ public class BrowseEventsActivity extends AppCompatActivity {
                 nameParams
         );
 
-        header.addView(nameView);
+        header.addView(
+                nameView
+        );
 
 
         // =========================
@@ -397,14 +589,21 @@ public class BrowseEventsActivity extends AppCompatActivity {
                         eventTime
                 );
 
+
         LinearLayout statusPill =
                 createStatusPill(
                         eventStatus
                 );
 
-        header.addView(statusPill);
 
-        card.addView(header);
+        header.addView(
+                statusPill
+        );
+
+
+        card.addView(
+                header
+        );
 
 
         // =========================
@@ -418,9 +617,17 @@ public class BrowseEventsActivity extends AppCompatActivity {
                 description
         );
 
-        descriptionView.setTextSize(13);
-        descriptionView.setTextColor(GRAY_TEXT);
-        descriptionView.setMaxLines(3);
+        descriptionView.setTextSize(
+                13
+        );
+
+        descriptionView.setTextColor(
+                GRAY_TEXT
+        );
+
+        descriptionView.setMaxLines(
+                3
+        );
 
         descriptionView.setPadding(
                 0,
@@ -429,7 +636,9 @@ public class BrowseEventsActivity extends AppCompatActivity {
                 dp(10)
         );
 
-        card.addView(descriptionView);
+        card.addView(
+                descriptionView
+        );
 
 
         // =========================
@@ -443,11 +652,13 @@ public class BrowseEventsActivity extends AppCompatActivity {
                 LinearLayout.VERTICAL
         );
 
+
         detailsLayout.addView(
                 createDetailText(
                         "📅  " + eventDate
                 )
         );
+
 
         detailsLayout.addView(
                 createDetailText(
@@ -455,11 +666,13 @@ public class BrowseEventsActivity extends AppCompatActivity {
                 )
         );
 
+
         detailsLayout.addView(
                 createDetailText(
                         "📍  " + venue
                 )
         );
+
 
         detailsLayout.addView(
                 createDetailText(
@@ -467,7 +680,10 @@ public class BrowseEventsActivity extends AppCompatActivity {
                 )
         );
 
-        card.addView(detailsLayout);
+
+        card.addView(
+                detailsLayout
+        );
 
 
         // =========================
@@ -484,6 +700,7 @@ public class BrowseEventsActivity extends AppCompatActivity {
         registrationHeader.setGravity(
                 Gravity.CENTER_VERTICAL
         );
+
 
         LinearLayout.LayoutParams registrationHeaderParams =
                 new LinearLayout.LayoutParams(
@@ -502,6 +719,7 @@ public class BrowseEventsActivity extends AppCompatActivity {
                 registrationHeaderParams
         );
 
+
         TextView registrationTitle =
                 new TextView(this);
 
@@ -509,13 +727,19 @@ public class BrowseEventsActivity extends AppCompatActivity {
                 "Registration"
         );
 
-        registrationTitle.setTextSize(13);
-        registrationTitle.setTextColor(DARK_TEXT);
+        registrationTitle.setTextSize(
+                13
+        );
+
+        registrationTitle.setTextColor(
+                DARK_TEXT
+        );
 
         registrationTitle.setTypeface(
                 null,
                 Typeface.BOLD
         );
+
 
         LinearLayout.LayoutParams titleParams =
                 new LinearLayout.LayoutParams(
@@ -528,9 +752,11 @@ public class BrowseEventsActivity extends AppCompatActivity {
                 titleParams
         );
 
+
         registrationHeader.addView(
                 registrationTitle
         );
+
 
         TextView registrationCountText =
                 new TextView(this);
@@ -541,17 +767,24 @@ public class BrowseEventsActivity extends AppCompatActivity {
                         maxRegistrations
         );
 
-        registrationCountText.setTextSize(13);
-        registrationCountText.setTextColor(PURPLE);
+        registrationCountText.setTextSize(
+                13
+        );
+
+        registrationCountText.setTextColor(
+                PURPLE
+        );
 
         registrationCountText.setTypeface(
                 null,
                 Typeface.BOLD
         );
 
+
         registrationHeader.addView(
                 registrationCountText
         );
+
 
         card.addView(
                 registrationHeader
@@ -569,20 +802,27 @@ public class BrowseEventsActivity extends AppCompatActivity {
                 LinearLayout.HORIZONTAL
         );
 
+
         GradientDrawable progressBg =
                 new GradientDrawable();
 
         progressBg.setColor(
-                Color.rgb(232, 228, 240)
+                Color.rgb(
+                        232,
+                        228,
+                        240
+                )
         );
 
         progressBg.setCornerRadius(
                 dp(6)
         );
 
+
         progressBackground.setBackground(
                 progressBg
         );
+
 
         LinearLayout.LayoutParams progressParams =
                 new LinearLayout.LayoutParams(
@@ -590,11 +830,14 @@ public class BrowseEventsActivity extends AppCompatActivity {
                         dp(7)
                 );
 
+
         progressBackground.setLayoutParams(
                 progressParams
         );
 
+
         float percentage = 0;
+
 
         if (maxRegistrations > 0) {
 
@@ -603,16 +846,21 @@ public class BrowseEventsActivity extends AppCompatActivity {
                             maxRegistrations;
 
             if (percentage > 1) {
+
                 percentage = 1;
             }
         }
 
-        View progressFill =
-                new View(this);
+
+        View progressFill;
 
         LinearLayout.LayoutParams fillParams;
 
+
         if (registeredCount > 0) {
+
+            progressFill =
+                    new View(this);
 
             fillParams =
                     new LinearLayout.LayoutParams(
@@ -623,6 +871,9 @@ public class BrowseEventsActivity extends AppCompatActivity {
 
         } else {
 
+            progressFill =
+                    new View(this);
+
             fillParams =
                     new LinearLayout.LayoutParams(
                             0,
@@ -631,9 +882,11 @@ public class BrowseEventsActivity extends AppCompatActivity {
                     );
         }
 
+
         progressFill.setLayoutParams(
                 fillParams
         );
+
 
         GradientDrawable fillBackground =
                 new GradientDrawable();
@@ -642,22 +895,31 @@ public class BrowseEventsActivity extends AppCompatActivity {
                 dp(6)
         );
 
-        if (registeredCount >= maxRegistrations) {
 
-            fillBackground.setColor(RED);
+        if (registeredCount >=
+                maxRegistrations) {
+
+            fillBackground.setColor(
+                    RED
+            );
 
         } else {
 
-            fillBackground.setColor(PURPLE);
+            fillBackground.setColor(
+                    PURPLE
+            );
         }
+
 
         progressFill.setBackground(
                 fillBackground
         );
 
+
         progressBackground.addView(
                 progressFill
         );
+
 
         card.addView(
                 progressBackground
@@ -671,21 +933,28 @@ public class BrowseEventsActivity extends AppCompatActivity {
         TextView spotsText =
                 new TextView(this);
 
+
         int spotsLeft =
                 maxRegistrations -
                         registeredCount;
 
+
         if (spotsLeft < 0) {
+
             spotsLeft = 0;
         }
 
-        if (registeredCount >= maxRegistrations) {
+
+        if (registeredCount >=
+                maxRegistrations) {
 
             spotsText.setText(
                     "FULL • No spots left"
             );
 
-            spotsText.setTextColor(RED);
+            spotsText.setTextColor(
+                    RED
+            );
 
         } else {
 
@@ -703,7 +972,10 @@ public class BrowseEventsActivity extends AppCompatActivity {
             );
         }
 
-        spotsText.setTextSize(11);
+
+        spotsText.setTextSize(
+                11
+        );
 
         spotsText.setGravity(
                 Gravity.END
@@ -716,7 +988,10 @@ public class BrowseEventsActivity extends AppCompatActivity {
                 0
         );
 
-        card.addView(spotsText);
+
+        card.addView(
+                spotsText
+        );
 
 
         // =========================
@@ -726,9 +1001,17 @@ public class BrowseEventsActivity extends AppCompatActivity {
         Button registerButton =
                 new Button(this);
 
-        registerButton.setTextSize(14);
-        registerButton.setAllCaps(false);
-        registerButton.setTextColor(Color.WHITE);
+        registerButton.setTextSize(
+                14
+        );
+
+        registerButton.setAllCaps(
+                false
+        );
+
+        registerButton.setTextColor(
+                Color.WHITE
+        );
 
         registerButton.setTypeface(
                 null,
@@ -746,14 +1029,21 @@ public class BrowseEventsActivity extends AppCompatActivity {
                 0
         );
 
-        registerButton.setMinHeight(0);
-        registerButton.setMinimumHeight(0);
+        registerButton.setMinHeight(
+                0
+        );
+
+        registerButton.setMinimumHeight(
+                0
+        );
+
 
         LinearLayout.LayoutParams buttonParams =
                 new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
                         dp(44)
                 );
+
 
         buttonParams.setMargins(
                 0,
@@ -762,12 +1052,18 @@ public class BrowseEventsActivity extends AppCompatActivity {
                 0
         );
 
+
         registerButton.setLayoutParams(
                 buttonParams
         );
 
-        registerButton.setBackgroundTintList(null);
-        registerButton.setStateListAnimator(null);
+        registerButton.setBackgroundTintList(
+                null
+        );
+
+        registerButton.setStateListAnimator(
+                null
+        );
 
 
         // =========================
@@ -780,15 +1076,19 @@ public class BrowseEventsActivity extends AppCompatActivity {
                         studentEmail
                 );
 
+
         boolean eventFull =
-                registeredCount >= maxRegistrations;
+                registeredCount >=
+                        maxRegistrations;
 
 
         // =========================
         // COMPLETED EVENT
         // =========================
 
-        if (eventStatus.equals("COMPLETED")) {
+        if (eventStatus.equals(
+                "COMPLETED"
+        )) {
 
             registerButton.setText(
                     "EVENT ENDED"
@@ -799,8 +1099,13 @@ public class BrowseEventsActivity extends AppCompatActivity {
                     "#9E9E9E"
             );
 
-            registerButton.setEnabled(false);
-            registerButton.setClickable(false);
+            registerButton.setEnabled(
+                    false
+            );
+
+            registerButton.setClickable(
+                    false
+            );
         }
 
 
@@ -819,7 +1124,9 @@ public class BrowseEventsActivity extends AppCompatActivity {
                     "#34A853"
             );
 
-            registerButton.setEnabled(false);
+            registerButton.setEnabled(
+                    false
+            );
         }
 
 
@@ -838,7 +1145,9 @@ public class BrowseEventsActivity extends AppCompatActivity {
                     "#E53935"
             );
 
-            registerButton.setEnabled(false);
+            registerButton.setEnabled(
+                    false
+            );
         }
 
 
@@ -857,8 +1166,13 @@ public class BrowseEventsActivity extends AppCompatActivity {
                     "#6B4DB5"
             );
 
-            registerButton.setEnabled(true);
-            registerButton.setClickable(true);
+            registerButton.setEnabled(
+                    true
+            );
+
+            registerButton.setClickable(
+                    true
+            );
 
 
             registerButton.setOnClickListener(v -> {
@@ -873,6 +1187,7 @@ public class BrowseEventsActivity extends AppCompatActivity {
                                 eventTime
                         );
 
+
                 if (currentStatus.equals(
                         "COMPLETED"
                 )) {
@@ -886,8 +1201,13 @@ public class BrowseEventsActivity extends AppCompatActivity {
                             "#9E9E9E"
                     );
 
-                    registerButton.setEnabled(false);
-                    registerButton.setClickable(false);
+                    registerButton.setEnabled(
+                            false
+                    );
+
+                    registerButton.setClickable(
+                            false
+                    );
 
                     return;
                 }
@@ -935,6 +1255,7 @@ public class BrowseEventsActivity extends AppCompatActivity {
                                             eventId
                                     );
 
+
                     registrationCountText.setText(
                             updatedCount +
                                     " / " +
@@ -946,7 +1267,9 @@ public class BrowseEventsActivity extends AppCompatActivity {
                             maxRegistrations -
                                     updatedCount;
 
+
                     if (updatedSpots < 0) {
+
                         updatedSpots = 0;
                     }
 
@@ -971,6 +1294,7 @@ public class BrowseEventsActivity extends AppCompatActivity {
                                 false
                         );
 
+
                         spotsText.setText(
                                 "FULL • No spots left"
                         );
@@ -978,7 +1302,6 @@ public class BrowseEventsActivity extends AppCompatActivity {
                         spotsText.setTextColor(
                                 RED
                         );
-
                     }
 
 
@@ -1000,6 +1323,7 @@ public class BrowseEventsActivity extends AppCompatActivity {
                         registerButton.setEnabled(
                                 false
                         );
+
 
                         spotsText.setText(
                                 updatedSpots +
@@ -1026,11 +1350,13 @@ public class BrowseEventsActivity extends AppCompatActivity {
                                             studentEmail
                                     );
 
+
                     int currentCount =
                             databaseHelper
                                     .getEventRegistrationCount(
                                             eventId
                                     );
+
 
                     registrationCountText.setText(
                             currentCount +
@@ -1170,8 +1496,13 @@ public class BrowseEventsActivity extends AppCompatActivity {
         TextView text =
                 new TextView(this);
 
-        text.setText(status);
-        text.setTextSize(10);
+        text.setText(
+                status
+        );
+
+        text.setTextSize(
+                10
+        );
 
         text.setTypeface(
                 null,
@@ -1183,7 +1514,9 @@ public class BrowseEventsActivity extends AppCompatActivity {
         // UPCOMING
         // =========================
 
-        if (status.equals("UPCOMING")) {
+        if (status.equals(
+                "UPCOMING"
+        )) {
 
             pillBackground.setColor(
                     Color.rgb(
@@ -1201,6 +1534,7 @@ public class BrowseEventsActivity extends AppCompatActivity {
                     GREEN
             );
 
+
             try {
 
                 Animation pulseAnimation =
@@ -1215,7 +1549,7 @@ public class BrowseEventsActivity extends AppCompatActivity {
 
             } catch (Exception e) {
 
-                // Animation is optional
+                // Animation is optional.
             }
         }
 
@@ -1274,6 +1608,7 @@ public class BrowseEventsActivity extends AppCompatActivity {
                 text
         );
 
+
         return pill;
     }
 
@@ -1293,21 +1628,27 @@ public class BrowseEventsActivity extends AppCompatActivity {
                             " " +
                             eventTime;
 
+
             SimpleDateFormat format =
                     new SimpleDateFormat(
                             "d/M/yyyy HH:mm",
                             Locale.getDefault()
                     );
 
-            format.setLenient(false);
+            format.setLenient(
+                    false
+            );
+
 
             Date eventDateTimeObject =
                     format.parse(
                             eventDateTime
                     );
 
+
             Date currentDateTime =
                     new Date();
+
 
             if (eventDateTimeObject != null &&
                     currentDateTime.before(
@@ -1338,9 +1679,13 @@ public class BrowseEventsActivity extends AppCompatActivity {
         TextView textView =
                 new TextView(this);
 
-        textView.setText(text);
+        textView.setText(
+                text
+        );
 
-        textView.setTextSize(12);
+        textView.setTextSize(
+                12
+        );
 
         textView.setTextColor(
                 GRAY_TEXT
@@ -1352,6 +1697,7 @@ public class BrowseEventsActivity extends AppCompatActivity {
                 0,
                 dp(2)
         );
+
 
         return textView;
     }
@@ -1373,7 +1719,9 @@ public class BrowseEventsActivity extends AppCompatActivity {
         );
 
         background.setColor(
-                Color.parseColor(color)
+                Color.parseColor(
+                        color
+                )
         );
 
         background.setCornerRadius(
@@ -1392,7 +1740,9 @@ public class BrowseEventsActivity extends AppCompatActivity {
                 Color.WHITE
         );
 
-        button.setTextSize(14);
+        button.setTextSize(
+                14
+        );
 
         button.setTypeface(
                 null,
@@ -1403,7 +1753,9 @@ public class BrowseEventsActivity extends AppCompatActivity {
                 Gravity.CENTER
         );
 
-        button.setAlpha(1.0f);
+        button.setAlpha(
+                1.0f
+        );
 
         button.setElevation(
                 dp(2)
@@ -1424,7 +1776,9 @@ public class BrowseEventsActivity extends AppCompatActivity {
                 "🎉\n\nNo events available yet.\nCheck back soon!"
         );
 
-        noEvents.setTextSize(17);
+        noEvents.setTextSize(
+                17
+        );
 
         noEvents.setTextColor(
                 GRAY_TEXT

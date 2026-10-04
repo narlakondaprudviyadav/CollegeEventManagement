@@ -95,7 +95,8 @@ public class StudentDashboardActivity extends AppCompatActivity {
         // SHOW STUDENT NAME
         // =========================
 
-        if (userName != null && !userName.isEmpty()) {
+        if (userName != null &&
+                !userName.isEmpty()) {
 
             studentNameTextView.setText(userName);
 
@@ -113,7 +114,7 @@ public class StudentDashboardActivity extends AppCompatActivity {
 
 
         // =========================
-        // BROWSE EVENTS
+        // BROWSE EVENTS BUTTON
         // =========================
 
         browseEventsButton.setOnClickListener(v -> {
@@ -139,7 +140,7 @@ public class StudentDashboardActivity extends AppCompatActivity {
 
 
         // =========================
-        // MY EVENTS
+        // MY EVENTS BUTTON
         // =========================
 
         myEventsButton.setOnClickListener(v -> {
@@ -165,105 +166,40 @@ public class StudentDashboardActivity extends AppCompatActivity {
 
 
         // =========================
-        // NOTIFICATIONS
+        // NOTIFICATIONS BUTTON
         // =========================
 
         notificationsButton.setOnClickListener(v -> {
 
-            // Notifications page will be connected next
+            // Notifications page will be connected later.
 
         });
 
+
+        // =========================
+        // NOTIFICATION ICON
+        // =========================
 
         notificationIcon.setOnClickListener(v -> {
 
-            // Notifications page will be connected next
+            // Notifications page will be connected later.
 
         });
 
 
-        // =========================
-        // BOTTOM NAVIGATION
-        // =========================
+        // =====================================================
+        // REUSABLE STUDENT BOTTOM NAVIGATION
+        // =====================================================
 
-        // HOME
-        navHome.setOnClickListener(v -> {
-
-            // Already on Home
-
-        });
-
-
-        // EVENTS
-        navEvents.setOnClickListener(v -> {
-
-            Intent intent =
-                    new Intent(
-                            StudentDashboardActivity.this,
-                            BrowseEventsActivity.class
-                    );
-
-            intent.putExtra(
-                    "USER_NAME",
-                    userName
-            );
-
-            intent.putExtra(
-                    "email",
-                    email
-            );
-
-            startActivity(intent);
-        });
-
-
-        // MY EVENTS
-        navMyEvents.setOnClickListener(v -> {
-
-            Intent intent =
-                    new Intent(
-                            StudentDashboardActivity.this,
-                            MyEventsActivity.class
-                    );
-
-            intent.putExtra(
-                    "USER_NAME",
-                    userName
-            );
-
-            intent.putExtra(
-                    "email",
-                    email
-            );
-
-            startActivity(intent);
-        });
-
-
-        // =========================
-        // PROFILE
-        // =========================
-
-        navProfile.setOnClickListener(v -> {
-
-            Intent intent =
-                    new Intent(
-                            StudentDashboardActivity.this,
-                            ProfileActivity.class
-                    );
-
-            intent.putExtra(
-                    "USER_NAME",
-                    userName
-            );
-
-            intent.putExtra(
-                    "email",
-                    email
-            );
-
-            startActivity(intent);
-        });
+        StudentBottomNavHelper.setup(
+                this,
+                navHome,
+                navEvents,
+                navMyEvents,
+                navProfile,
+                userName,
+                email
+        );
     }
 
 
