@@ -7,6 +7,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -22,45 +23,148 @@ import java.util.Locale;
 
 public class ManageEventsActivity extends AppCompatActivity {
 
-    ImageButton backButton;
-    LinearLayout eventsContainer;
+    // =====================================================
+    // VIEWS
+    // =====================================================
 
-    DatabaseHelper databaseHelper;
+    private ImageButton backButton;
+    private LinearLayout eventsContainer;
+
+    // Admin bottom navigation
+    private View navHome;
+    private View navEvents;
+    private View navRegistrations;
+    private View navProfile;
+
+
+    // =====================================================
+    // DATABASE
+    // =====================================================
+
+    private DatabaseHelper databaseHelper;
+
+
+    // =====================================================
+    // ADMIN DETAILS
+    // =====================================================
+
+    private String userName;
+    private String email;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_manage_events);
+        setContentView(
+                R.layout.activity_manage_events
+        );
 
-        // =========================
+
+        // =====================================================
         // DATABASE
-        // =========================
+        // =====================================================
 
         databaseHelper =
                 new DatabaseHelper(this);
 
-        // =========================
+
+        // =====================================================
         // CONNECT XML VIEWS
-        // =========================
+        // =====================================================
 
         backButton =
-                findViewById(R.id.backButton);
+                findViewById(
+                        R.id.backButton
+                );
 
         eventsContainer =
-                findViewById(R.id.eventsContainer);
+                findViewById(
+                        R.id.eventsContainer
+                );
 
-        // =========================
+
+        // =====================================================
+        // ADMIN BOTTOM NAVIGATION
+        // =====================================================
+
+        navHome =
+                findViewById(
+                        R.id.navHome
+                );
+
+        navEvents =
+                findViewById(
+                        R.id.navEvents
+                );
+
+        navRegistrations =
+                findViewById(
+                        R.id.navRegistrations
+                );
+
+        navProfile =
+                findViewById(
+                        R.id.navProfile
+                );
+
+
+        // =====================================================
+        // GET ADMIN DETAILS
+        // =====================================================
+
+        userName =
+                getIntent().getStringExtra(
+                        "USER_NAME"
+                );
+
+        email =
+                getIntent().getStringExtra(
+                        "email"
+                );
+
+
+        if (userName == null ||
+                userName.trim().isEmpty()) {
+
+            userName = "Admin";
+        }
+
+
+        if (email == null) {
+
+            email = "";
+        }
+
+
+        // =====================================================
+        // SETUP ADMIN BOTTOM NAVIGATION
+        // =====================================================
+
+        AdminBottomNavHelper.setup(
+                this,
+                navHome,
+                navEvents,
+                navRegistrations,
+                navProfile,
+                userName,
+                email
+        );
+
+
+        // =====================================================
         // BACK BUTTON
-        // =========================
+        // =====================================================
 
         backButton.setOnClickListener(v ->
                 finish()
         );
 
-        // =========================
+
+        // =====================================================
         // LOAD EVENTS
-        // =========================
+        // =====================================================
 
         loadEvents();
     }
@@ -74,12 +178,14 @@ public class ManageEventsActivity extends AppCompatActivity {
 
         eventsContainer.removeAllViews();
 
+
         Cursor cursor =
                 databaseHelper.getAllEvents();
 
-        // =========================
+
+        // =====================================================
         // NO EVENTS
-        // =========================
+        // =====================================================
 
         if (cursor == null ||
                 cursor.getCount() == 0) {
@@ -88,22 +194,30 @@ public class ManageEventsActivity extends AppCompatActivity {
                 cursor.close();
             }
 
+
             TextView noEvents =
                     new TextView(this);
+
 
             noEvents.setText(
                     "No events available."
             );
 
-            noEvents.setTextSize(18);
+
+            noEvents.setTextSize(
+                    18
+            );
+
 
             noEvents.setTextColor(
                     Color.DKGRAY
             );
 
+
             noEvents.setGravity(
                     Gravity.CENTER
             );
+
 
             noEvents.setPadding(
                     20,
@@ -112,40 +226,63 @@ public class ManageEventsActivity extends AppCompatActivity {
                     60
             );
 
+
             eventsContainer.addView(
                     noEvents
             );
+
 
             return;
         }
 
 
-        // =========================
+        // =====================================================
         // READ EVENTS
-        // =========================
+        // =====================================================
 
         while (cursor.moveToNext()) {
 
             int eventIdIndex =
-                    cursor.getColumnIndex("event_id");
+                    cursor.getColumnIndex(
+                            "event_id"
+                    );
+
 
             int eventNameIndex =
-                    cursor.getColumnIndex("event_name");
+                    cursor.getColumnIndex(
+                            "event_name"
+                    );
+
 
             int descriptionIndex =
-                    cursor.getColumnIndex("description");
+                    cursor.getColumnIndex(
+                            "description"
+                    );
+
 
             int dateIndex =
-                    cursor.getColumnIndex("event_date");
+                    cursor.getColumnIndex(
+                            "event_date"
+                    );
+
 
             int timeIndex =
-                    cursor.getColumnIndex("event_time");
+                    cursor.getColumnIndex(
+                            "event_time"
+                    );
+
 
             int venueIndex =
-                    cursor.getColumnIndex("venue");
+                    cursor.getColumnIndex(
+                            "venue"
+                    );
+
 
             int organizerIndex =
-                    cursor.getColumnIndex("organizer");
+                    cursor.getColumnIndex(
+                            "organizer"
+                    );
+
 
             int maxRegistrationsIndex =
                     cursor.getColumnIndex(
@@ -155,38 +292,59 @@ public class ManageEventsActivity extends AppCompatActivity {
 
             int eventId =
                     eventIdIndex != -1
-                            ? cursor.getInt(eventIdIndex)
+                            ? cursor.getInt(
+                            eventIdIndex
+                    )
                             : -1;
+
 
             String eventName =
                     eventNameIndex != -1
-                            ? cursor.getString(eventNameIndex)
+                            ? cursor.getString(
+                            eventNameIndex
+                    )
                             : "Unknown Event";
+
 
             String description =
                     descriptionIndex != -1
-                            ? cursor.getString(descriptionIndex)
+                            ? cursor.getString(
+                            descriptionIndex
+                    )
                             : "";
+
 
             String eventDate =
                     dateIndex != -1
-                            ? cursor.getString(dateIndex)
+                            ? cursor.getString(
+                            dateIndex
+                    )
                             : "";
+
 
             String eventTime =
                     timeIndex != -1
-                            ? cursor.getString(timeIndex)
+                            ? cursor.getString(
+                            timeIndex
+                    )
                             : "";
+
 
             String venue =
                     venueIndex != -1
-                            ? cursor.getString(venueIndex)
+                            ? cursor.getString(
+                            venueIndex
+                    )
                             : "";
+
 
             String organizer =
                     organizerIndex != -1
-                            ? cursor.getString(organizerIndex)
+                            ? cursor.getString(
+                            organizerIndex
+                    )
                             : "";
+
 
             int maxRegistrations =
                     maxRegistrationsIndex != -1
@@ -196,9 +354,9 @@ public class ManageEventsActivity extends AppCompatActivity {
                             : 50;
 
 
-            // =========================
+            // =================================================
             // GET REGISTRATION COUNT
-            // =========================
+            // =================================================
 
             int registeredCount =
                     databaseHelper.getEventRegistrationCount(
@@ -220,10 +378,6 @@ public class ManageEventsActivity extends AppCompatActivity {
         }
 
 
-        // =========================
-        // CLOSE CURSOR
-        // =========================
-
         cursor.close();
     }
 
@@ -241,19 +395,22 @@ public class ManageEventsActivity extends AppCompatActivity {
             String venue,
             String organizer,
             int registeredCount,
-            int maxRegistrations) {
+            int maxRegistrations
+    ) {
 
 
-        // =========================
+        // =====================================================
         // CARD
-        // =========================
+        // =====================================================
 
         LinearLayout card =
                 new LinearLayout(this);
 
+
         card.setOrientation(
                 LinearLayout.VERTICAL
         );
+
 
         card.setPadding(
                 20,
@@ -263,40 +420,45 @@ public class ManageEventsActivity extends AppCompatActivity {
         );
 
 
-        // =========================
+        // =====================================================
         // CARD BACKGROUND
-        // =========================
+        // =====================================================
 
         GradientDrawable cardBackground =
                 new GradientDrawable();
+
 
         cardBackground.setColor(
                 Color.WHITE
         );
 
+
         cardBackground.setCornerRadius(
                 20
         );
+
 
         cardBackground.setStroke(
                 1,
                 Color.LTGRAY
         );
 
+
         card.setBackground(
                 cardBackground
         );
 
 
-        // =========================
+        // =====================================================
         // CARD MARGINS
-        // =========================
+        // =====================================================
 
         LinearLayout.LayoutParams cardParams =
                 new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT
                 );
+
 
         cardParams.setMargins(
                 16,
@@ -305,25 +467,29 @@ public class ManageEventsActivity extends AppCompatActivity {
                 10
         );
 
+
         card.setLayoutParams(
                 cardParams
         );
 
 
-        // =========================
+        // =====================================================
         // EVENT NAME
-        // =========================
+        // =====================================================
 
         TextView eventNameText =
                 new TextView(this);
+
 
         eventNameText.setText(
                 eventName
         );
 
+
         eventNameText.setTextSize(
                 20
         );
+
 
         eventNameText.setTextColor(
                 Color.rgb(
@@ -333,10 +499,12 @@ public class ManageEventsActivity extends AppCompatActivity {
                 )
         );
 
+
         eventNameText.setTypeface(
                 null,
                 Typeface.BOLD
         );
+
 
         eventNameText.setPadding(
                 0,
@@ -346,24 +514,29 @@ public class ManageEventsActivity extends AppCompatActivity {
         );
 
 
-        // =========================
+        // =====================================================
         // DESCRIPTION
-        // =========================
+        // =====================================================
 
         TextView descriptionText =
                 new TextView(this);
 
+
         descriptionText.setText(
-                "Description: " + description
+                "Description: " +
+                        description
         );
+
 
         descriptionText.setTextSize(
                 15
         );
 
+
         descriptionText.setTextColor(
                 Color.DKGRAY
         );
+
 
         descriptionText.setPadding(
                 0,
@@ -373,24 +546,29 @@ public class ManageEventsActivity extends AppCompatActivity {
         );
 
 
-        // =========================
+        // =====================================================
         // DATE
-        // =========================
+        // =====================================================
 
         TextView dateText =
                 new TextView(this);
 
+
         dateText.setText(
-                "Date: " + eventDate
+                "Date: " +
+                        eventDate
         );
+
 
         dateText.setTextSize(
                 15
         );
 
+
         dateText.setTextColor(
                 Color.DKGRAY
         );
+
 
         dateText.setPadding(
                 0,
@@ -400,24 +578,29 @@ public class ManageEventsActivity extends AppCompatActivity {
         );
 
 
-        // =========================
+        // =====================================================
         // TIME
-        // =========================
+        // =====================================================
 
         TextView timeText =
                 new TextView(this);
 
+
         timeText.setText(
-                "Time: " + eventTime
+                "Time: " +
+                        eventTime
         );
+
 
         timeText.setTextSize(
                 15
         );
 
+
         timeText.setTextColor(
                 Color.DKGRAY
         );
+
 
         timeText.setPadding(
                 0,
@@ -427,24 +610,29 @@ public class ManageEventsActivity extends AppCompatActivity {
         );
 
 
-        // =========================
+        // =====================================================
         // VENUE
-        // =========================
+        // =====================================================
 
         TextView venueText =
                 new TextView(this);
 
+
         venueText.setText(
-                "Venue: " + venue
+                "Venue: " +
+                        venue
         );
+
 
         venueText.setTextSize(
                 15
         );
 
+
         venueText.setTextColor(
                 Color.DKGRAY
         );
+
 
         venueText.setPadding(
                 0,
@@ -454,24 +642,29 @@ public class ManageEventsActivity extends AppCompatActivity {
         );
 
 
-        // =========================
+        // =====================================================
         // ORGANIZER
-        // =========================
+        // =====================================================
 
         TextView organizerText =
                 new TextView(this);
 
+
         organizerText.setText(
-                "Organizer: " + organizer
+                "Organizer: " +
+                        organizer
         );
+
 
         organizerText.setTextSize(
                 15
         );
 
+
         organizerText.setTextColor(
                 Color.DKGRAY
         );
+
 
         organizerText.setPadding(
                 0,
@@ -481,12 +674,13 @@ public class ManageEventsActivity extends AppCompatActivity {
         );
 
 
-        // =========================
+        // =====================================================
         // REGISTRATION CAPACITY
-        // =========================
+        // =====================================================
 
         TextView registrationText =
                 new TextView(this);
+
 
         registrationText.setText(
                 "Registered: " +
@@ -495,14 +689,17 @@ public class ManageEventsActivity extends AppCompatActivity {
                         maxRegistrations
         );
 
+
         registrationText.setTextSize(
                 16
         );
+
 
         registrationText.setTypeface(
                 null,
                 Typeface.BOLD
         );
+
 
         registrationText.setTextColor(
                 Color.rgb(
@@ -512,6 +709,7 @@ public class ManageEventsActivity extends AppCompatActivity {
                 )
         );
 
+
         registrationText.setPadding(
                 0,
                 8,
@@ -520,12 +718,13 @@ public class ManageEventsActivity extends AppCompatActivity {
         );
 
 
-        // =========================
+        // =====================================================
         // EVENT STATUS
-        // =========================
+        // =====================================================
 
         TextView statusText =
                 new TextView(this);
+
 
         boolean completed =
                 isEventCompleted(
@@ -539,6 +738,7 @@ public class ManageEventsActivity extends AppCompatActivity {
             statusText.setText(
                     "COMPLETED"
             );
+
 
             statusText.setTextColor(
                     Color.rgb(
@@ -554,6 +754,7 @@ public class ManageEventsActivity extends AppCompatActivity {
                     "UPCOMING"
             );
 
+
             statusText.setTextColor(
                     Color.rgb(
                             50,
@@ -568,10 +769,12 @@ public class ManageEventsActivity extends AppCompatActivity {
                 14
         );
 
+
         statusText.setTypeface(
                 null,
                 Typeface.BOLD
         );
+
 
         statusText.setPadding(
                 0,
@@ -588,21 +791,26 @@ public class ManageEventsActivity extends AppCompatActivity {
         Button editButton =
                 new Button(this);
 
+
         editButton.setText(
                 "EDIT"
         );
+
 
         editButton.setTextColor(
                 Color.WHITE
         );
 
+
         editButton.setTextSize(
                 14
         );
 
+
         editButton.setAllCaps(
                 false
         );
+
 
         editButton.setBackgroundTintList(
                 android.content.res.ColorStateList.valueOf(
@@ -621,12 +829,14 @@ public class ManageEventsActivity extends AppCompatActivity {
                         LinearLayout.LayoutParams.WRAP_CONTENT
                 );
 
+
         editButtonParams.setMargins(
                 0,
                 10,
                 0,
                 0
         );
+
 
         editButton.setLayoutParams(
                 editButtonParams
@@ -645,45 +855,54 @@ public class ManageEventsActivity extends AppCompatActivity {
                             EditEventActivity.class
                     );
 
+
             intent.putExtra(
                     "EVENT_ID",
                     eventId
             );
+
 
             intent.putExtra(
                     "EVENT_NAME",
                     eventName
             );
 
+
             intent.putExtra(
                     "EVENT_DESCRIPTION",
                     description
             );
+
 
             intent.putExtra(
                     "EVENT_DATE",
                     eventDate
             );
 
+
             intent.putExtra(
                     "EVENT_TIME",
                     eventTime
             );
+
 
             intent.putExtra(
                     "EVENT_VENUE",
                     venue
             );
 
+
             intent.putExtra(
                     "EVENT_ORGANIZER",
                     organizer
             );
 
+
             intent.putExtra(
                     "EVENT_MAX_REGISTRATIONS",
                     maxRegistrations
             );
+
 
             startActivity(intent);
         });
@@ -696,21 +915,26 @@ public class ManageEventsActivity extends AppCompatActivity {
         Button deleteButton =
                 new Button(this);
 
+
         deleteButton.setText(
                 "DELETE"
         );
+
 
         deleteButton.setTextColor(
                 Color.WHITE
         );
 
+
         deleteButton.setTextSize(
                 14
         );
 
+
         deleteButton.setAllCaps(
                 false
         );
+
 
         deleteButton.setBackgroundTintList(
                 android.content.res.ColorStateList.valueOf(
@@ -729,12 +953,14 @@ public class ManageEventsActivity extends AppCompatActivity {
                         LinearLayout.LayoutParams.WRAP_CONTENT
                 );
 
+
         deleteButtonParams.setMargins(
                 0,
                 8,
                 0,
                 0
         );
+
 
         deleteButton.setLayoutParams(
                 deleteButtonParams
@@ -750,7 +976,9 @@ public class ManageEventsActivity extends AppCompatActivity {
             new AlertDialog.Builder(
                     ManageEventsActivity.this
             )
-                    .setTitle("Delete Event")
+                    .setTitle(
+                            "Delete Event"
+                    )
                     .setMessage(
                             "Are you sure you want to delete \"" +
                                     eventName +
@@ -769,6 +997,7 @@ public class ManageEventsActivity extends AppCompatActivity {
                                                 eventId
                                         );
 
+
                                 if (deleted) {
 
                                     android.widget.Toast.makeText(
@@ -776,6 +1005,7 @@ public class ManageEventsActivity extends AppCompatActivity {
                                             "Event deleted successfully",
                                             android.widget.Toast.LENGTH_SHORT
                                     ).show();
+
 
                                     loadEvents();
 
@@ -793,54 +1023,63 @@ public class ManageEventsActivity extends AppCompatActivity {
         });
 
 
-        // =========================
+        // =====================================================
         // ADD VIEWS TO CARD
-        // =========================
+        // =====================================================
 
         card.addView(
                 eventNameText
         );
 
+
         card.addView(
                 descriptionText
         );
+
 
         card.addView(
                 dateText
         );
 
+
         card.addView(
                 timeText
         );
+
 
         card.addView(
                 venueText
         );
 
+
         card.addView(
                 organizerText
         );
+
 
         card.addView(
                 registrationText
         );
 
+
         card.addView(
                 statusText
         );
 
+
         card.addView(
                 editButton
         );
+
 
         card.addView(
                 deleteButton
         );
 
 
-        // =========================
+        // =====================================================
         // ADD CARD TO CONTAINER
-        // =========================
+        // =====================================================
 
         eventsContainer.addView(
                 card
@@ -854,13 +1093,15 @@ public class ManageEventsActivity extends AppCompatActivity {
 
     private boolean isEventCompleted(
             String eventDate,
-            String eventTime) {
+            String eventTime
+    ) {
 
         SimpleDateFormat format =
                 new SimpleDateFormat(
                         "d/M/yyyy HH:mm",
                         Locale.getDefault()
                 );
+
 
         format.setLenient(false);
 
@@ -874,13 +1115,17 @@ public class ManageEventsActivity extends AppCompatActivity {
                                     eventTime
                     );
 
+
             if (eventDateTime == null) {
+
                 return false;
             }
+
 
             return new Date().after(
                     eventDateTime
             );
+
 
         } catch (ParseException e) {
 
@@ -897,6 +1142,7 @@ public class ManageEventsActivity extends AppCompatActivity {
     protected void onResume() {
 
         super.onResume();
+
 
         if (databaseHelper != null &&
                 eventsContainer != null) {

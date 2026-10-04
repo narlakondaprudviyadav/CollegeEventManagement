@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
 
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -9,12 +10,11 @@
     android:background="#F7F5FC">
 
 
-    <!-- =========================
-         HEADER
-         ========================= -->
+    <!-- ===================================================== -->
+    <!-- HEADER -->
+    <!-- ===================================================== -->
 
     <LinearLayout
-
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
 
@@ -25,6 +25,8 @@
 
         android:padding="10dp">
 
+
+        <!-- BACK BUTTON -->
 
         <ImageButton
 
@@ -39,6 +41,8 @@
 
             android:contentDescription="Back" />
 
+
+        <!-- TITLE -->
 
         <LinearLayout
 
@@ -82,16 +86,18 @@
     </LinearLayout>
 
 
-    <!-- =========================
-         REGISTRATIONS LIST
-         ========================= -->
+    <!-- ===================================================== -->
+    <!-- REGISTRATIONS LIST -->
+    <!-- ===================================================== -->
 
     <ScrollView
 
         android:layout_width="match_parent"
         android:layout_height="0dp"
 
-        android:layout_weight="1">
+        android:layout_weight="1"
+
+        android:fillViewport="true">
 
 
         <LinearLayout
@@ -107,5 +113,226 @@
             android:paddingBottom="20dp" />
 
     </ScrollView>
+
+
+    <!-- ===================================================== -->
+    <!-- ADMIN BOTTOM NAVIGATION -->
+    <!-- ===================================================== -->
+
+    <LinearLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="78dp"
+
+        android:orientation="horizontal"
+
+        android:gravity="center"
+
+        android:background="#FFFFFF"
+
+        android:elevation="10dp"
+
+        android:paddingTop="6dp"
+        android:paddingBottom="6dp">
+
+
+        <!-- ================================================= -->
+        <!-- HOME -->
+        <!-- ================================================= -->
+
+        <LinearLayout
+
+            android:id="@+id/navHome"
+
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+
+            android:layout_weight="1"
+
+            android:orientation="vertical"
+
+            android:gravity="center"
+
+            android:clickable="true"
+            android:focusable="true">
+
+
+            <ImageView
+
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+
+                android:src="@drawable/ic_home"
+
+                android:tint="#777777"
+
+                android:contentDescription="Home" />
+
+
+            <TextView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:text="Home"
+
+                android:textSize="12sp"
+
+                android:textColor="#777777"
+
+                android:layout_marginTop="3dp" />
+
+        </LinearLayout>
+
+
+        <!-- ================================================= -->
+        <!-- EVENTS -->
+        <!-- ================================================= -->
+
+        <LinearLayout
+
+            android:id="@+id/navEvents"
+
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+
+            android:layout_weight="1"
+
+            android:orientation="vertical"
+
+            android:gravity="center"
+
+            android:clickable="true"
+            android:focusable="true">
+
+
+            <ImageView
+
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+
+                android:src="@drawable/ic_event"
+
+                android:tint="#777777"
+
+                android:contentDescription="Events" />
+
+
+            <TextView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:text="Events"
+
+                android:textSize="12sp"
+
+                android:textColor="#777777"
+
+                android:layout_marginTop="3dp" />
+
+        </LinearLayout>
+
+
+        <!-- ================================================= -->
+        <!-- REGISTRATIONS - ACTIVE -->
+        <!-- ================================================= -->
+
+        <LinearLayout
+
+            android:id="@+id/navRegistrations"
+
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+
+            android:layout_weight="1"
+
+            android:orientation="vertical"
+
+            android:gravity="center"
+
+            android:clickable="true"
+            android:focusable="true">
+
+
+            <ImageView
+
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+
+                android:src="@drawable/ic_people"
+
+                android:tint="#6B4DB5"
+
+                android:contentDescription="Registrations" />
+
+
+            <TextView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:text="Registrations"
+
+                android:textSize="12sp"
+
+                android:textStyle="bold"
+
+                android:textColor="#6B4DB5"
+
+                android:layout_marginTop="3dp" />
+
+        </LinearLayout>
+
+
+        <!-- ================================================= -->
+        <!-- PROFILE -->
+        <!-- ================================================= -->
+
+        <LinearLayout
+
+            android:id="@+id/navProfile"
+
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+
+            android:layout_weight="1"
+
+            android:orientation="vertical"
+
+            android:gravity="center"
+
+            android:clickable="true"
+            android:focusable="true">
+
+
+            <ImageView
+
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+
+                android:src="@drawable/ic_person"
+
+                android:tint="#777777"
+
+                android:contentDescription="Profile" />
+
+
+            <TextView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:text="Profile"
+
+                android:textSize="12sp"
+
+                android:textColor="#777777"
+
+                android:layout_marginTop="3dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
 
 </LinearLayout>

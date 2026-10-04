@@ -22,11 +22,16 @@ public class AdminDashboardActivity extends AppCompatActivity {
     private Button registrationsButton;
     private Button notificationsButton;
 
-    // Using View avoids XML type-casting problems
+
+    // =====================================================
+    // ADMIN BOTTOM NAVIGATION
+    // =====================================================
+
     private View navHome;
     private View navEvents;
     private View navRegistrations;
     private View navProfile;
+
 
     private DatabaseHelper databaseHelper;
 
@@ -36,107 +41,170 @@ public class AdminDashboardActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_admin_dashboard);
+        setContentView(
+                R.layout.activity_admin_dashboard
+        );
 
 
-        // =========================
+        // =====================================================
         // DATABASE
-        // =========================
+        // =====================================================
 
-        databaseHelper = new DatabaseHelper(this);
+        databaseHelper =
+                new DatabaseHelper(this);
 
 
-        // =========================
+        // =====================================================
         // FIND VIEWS
-        // =========================
+        // =====================================================
 
         adminNameTextView =
-                findViewById(R.id.adminNameTextView);
+                findViewById(
+                        R.id.adminNameTextView
+                );
 
         totalEventsCount =
-                findViewById(R.id.totalEventsCount);
+                findViewById(
+                        R.id.totalEventsCount
+                );
 
         totalRegistrationsCount =
-                findViewById(R.id.totalRegistrationsCount);
+                findViewById(
+                        R.id.totalRegistrationsCount
+                );
 
         notificationIcon =
-                findViewById(R.id.notificationIcon);
+                findViewById(
+                        R.id.notificationIcon
+                );
 
         addEventButton =
-                findViewById(R.id.addEventButton);
+                findViewById(
+                        R.id.addEventButton
+                );
 
         manageEventsButton =
-                findViewById(R.id.manageEventsButton);
+                findViewById(
+                        R.id.manageEventsButton
+                );
 
         registrationsButton =
-                findViewById(R.id.registrationsButton);
+                findViewById(
+                        R.id.registrationsButton
+                );
 
         notificationsButton =
-                findViewById(R.id.notificationsButton);
+                findViewById(
+                        R.id.notificationsButton
+                );
 
 
-        // =========================
-        // BOTTOM NAVIGATION
-        // =========================
+        // =====================================================
+        // ADMIN BOTTOM NAVIGATION
+        // =====================================================
 
         navHome =
-                findViewById(R.id.navHome);
+                findViewById(
+                        R.id.navHome
+                );
 
         navEvents =
-                findViewById(R.id.navEvents);
+                findViewById(
+                        R.id.navEvents
+                );
 
         navRegistrations =
-                findViewById(R.id.navRegistrations);
+                findViewById(
+                        R.id.navRegistrations
+                );
 
         navProfile =
-                findViewById(R.id.navProfile);
+                findViewById(
+                        R.id.navProfile
+                );
 
 
-        // =========================
+        // =====================================================
         // GET ADMIN DETAILS
-        // =========================
+        // =====================================================
 
         userName =
-                getIntent().getStringExtra("USER_NAME");
+                getIntent().getStringExtra(
+                        "USER_NAME"
+                );
 
         email =
-                getIntent().getStringExtra("email");
+                getIntent().getStringExtra(
+                        "email"
+                );
 
 
-        // =========================
-        // SHOW ADMIN NAME
-        // =========================
+        // =====================================================
+        // DEFAULT ADMIN NAME
+        // =====================================================
 
-        if (userName != null &&
-                !userName.trim().isEmpty()) {
+        if (userName == null ||
+                userName.trim().isEmpty()) {
 
-            adminNameTextView.setText(userName);
-
-        } else {
-
-            adminNameTextView.setText("Admin");
+            userName = "Admin";
         }
 
 
-        // =========================
+        // =====================================================
+        // DEFAULT EMAIL
+        // =====================================================
+
+        if (email == null) {
+
+            email = "";
+        }
+
+
+        // =====================================================
+        // SHOW ADMIN NAME
+        // =====================================================
+
+        adminNameTextView.setText(
+                userName
+        );
+
+
+        // =====================================================
+        // SETUP REUSABLE ADMIN NAVIGATION
+        // =====================================================
+
+        AdminBottomNavHelper.setup(
+                this,
+                navHome,
+                navEvents,
+                navRegistrations,
+                navProfile,
+                userName,
+                email
+        );
+
+
+        // =====================================================
         // LOAD DASHBOARD COUNTS
-        // =========================
+        // =====================================================
 
         loadDashboardCounts();
 
 
-        // =========================
+        // =====================================================
         // ADD EVENT
-        // =========================
+        // =====================================================
 
         addEventButton.setOnClickListener(v -> {
 
-            Intent intent = new Intent(
-                    AdminDashboardActivity.this,
-                    AddEventActivity.class
-            );
+            Intent intent =
+                    new Intent(
+                            AdminDashboardActivity.this,
+                            AddEventActivity.class
+                    );
 
             intent.putExtra(
                     "USER_NAME",
@@ -152,16 +220,17 @@ public class AdminDashboardActivity extends AppCompatActivity {
         });
 
 
-        // =========================
+        // =====================================================
         // MANAGE EVENTS
-        // =========================
+        // =====================================================
 
         manageEventsButton.setOnClickListener(v -> {
 
-            Intent intent = new Intent(
-                    AdminDashboardActivity.this,
-                    ManageEventsActivity.class
-            );
+            Intent intent =
+                    new Intent(
+                            AdminDashboardActivity.this,
+                            ManageEventsActivity.class
+                    );
 
             intent.putExtra(
                     "USER_NAME",
@@ -177,16 +246,17 @@ public class AdminDashboardActivity extends AppCompatActivity {
         });
 
 
-        // =========================
+        // =====================================================
         // REGISTRATIONS
-        // =========================
+        // =====================================================
 
         registrationsButton.setOnClickListener(v -> {
 
-            Intent intent = new Intent(
-                    AdminDashboardActivity.this,
-                    RegistrationsActivity.class
-            );
+            Intent intent =
+                    new Intent(
+                            AdminDashboardActivity.this,
+                            RegistrationsActivity.class
+                    );
 
             intent.putExtra(
                     "USER_NAME",
@@ -202,111 +272,25 @@ public class AdminDashboardActivity extends AppCompatActivity {
         });
 
 
-        // =========================
+        // =====================================================
         // NOTIFICATIONS BUTTON
-        // =========================
+        // =====================================================
 
         notificationsButton.setOnClickListener(v -> {
 
-            // Notifications page will be connected later
+            // Notifications page will be connected later.
 
         });
 
 
-        // =========================
+        // =====================================================
         // NOTIFICATION ICON
-        // =========================
+        // =====================================================
 
         notificationIcon.setOnClickListener(v -> {
 
-            // Notifications page will be connected later
+            // Notifications page will be connected later.
 
-        });
-
-
-        // =========================
-        // HOME
-        // =========================
-
-        navHome.setOnClickListener(v -> {
-
-            // Already on Admin Dashboard
-
-        });
-
-
-        // =========================
-        // EVENTS
-        // =========================
-
-        navEvents.setOnClickListener(v -> {
-
-            Intent intent = new Intent(
-                    AdminDashboardActivity.this,
-                    ManageEventsActivity.class
-            );
-
-            intent.putExtra(
-                    "USER_NAME",
-                    userName
-            );
-
-            intent.putExtra(
-                    "email",
-                    email
-            );
-
-            startActivity(intent);
-        });
-
-
-        // =========================
-        // REGISTRATIONS
-        // =========================
-
-        navRegistrations.setOnClickListener(v -> {
-
-            Intent intent = new Intent(
-                    AdminDashboardActivity.this,
-                    RegistrationsActivity.class
-            );
-
-            intent.putExtra(
-                    "USER_NAME",
-                    userName
-            );
-
-            intent.putExtra(
-                    "email",
-                    email
-            );
-
-            startActivity(intent);
-        });
-
-
-        // =========================
-        // PROFILE
-        // =========================
-
-        navProfile.setOnClickListener(v -> {
-
-            Intent intent = new Intent(
-                    AdminDashboardActivity.this,
-                    ProfileActivity.class
-            );
-
-            intent.putExtra(
-                    "USER_NAME",
-                    userName
-            );
-
-            intent.putExtra(
-                    "email",
-                    email
-            );
-
-            startActivity(intent);
         });
     }
 
@@ -322,27 +306,33 @@ public class AdminDashboardActivity extends AppCompatActivity {
         }
 
 
-        // =========================
+        // =====================================================
         // TOTAL EVENTS
-        // =========================
+        // =====================================================
 
         int eventCount =
                 databaseHelper.getEventCount();
 
+
         totalEventsCount.setText(
-                String.valueOf(eventCount)
+                String.valueOf(
+                        eventCount
+                )
         );
 
 
-        // =========================
+        // =====================================================
         // TOTAL REGISTRATIONS
-        // =========================
+        // =====================================================
 
         int registrationCount =
                 databaseHelper.getRegistrationCount();
 
+
         totalRegistrationsCount.setText(
-                String.valueOf(registrationCount)
+                String.valueOf(
+                        registrationCount
+                )
         );
     }
 
@@ -355,6 +345,7 @@ public class AdminDashboardActivity extends AppCompatActivity {
     protected void onResume() {
 
         super.onResume();
+
 
         if (databaseHelper != null &&
                 totalEventsCount != null &&
