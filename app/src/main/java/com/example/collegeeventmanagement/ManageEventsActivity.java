@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -27,7 +26,6 @@ public class ManageEventsActivity extends AppCompatActivity {
     // VIEWS
     // =====================================================
 
-    private ImageButton backButton;
     private LinearLayout eventsContainer;
 
     // Admin bottom navigation
@@ -73,11 +71,6 @@ public class ManageEventsActivity extends AppCompatActivity {
         // =====================================================
         // CONNECT XML VIEWS
         // =====================================================
-
-        backButton =
-                findViewById(
-                        R.id.backButton
-                );
 
         eventsContainer =
                 findViewById(
@@ -154,15 +147,6 @@ public class ManageEventsActivity extends AppCompatActivity {
 
 
         // =====================================================
-        // BACK BUTTON
-        // =====================================================
-
-        backButton.setOnClickListener(v ->
-                finish()
-        );
-
-
-        // =====================================================
         // LOAD EVENTS
         // =====================================================
 
@@ -191,6 +175,7 @@ public class ManageEventsActivity extends AppCompatActivity {
                 cursor.getCount() == 0) {
 
             if (cursor != null) {
+
                 cursor.close();
             }
 

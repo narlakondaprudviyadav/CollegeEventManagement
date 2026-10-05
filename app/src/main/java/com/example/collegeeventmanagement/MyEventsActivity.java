@@ -1,6 +1,5 @@
 package com.example.collegeeventmanagement;
 
-import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -8,12 +7,10 @@ import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -25,7 +22,6 @@ import java.util.Locale;
 public class MyEventsActivity extends AppCompatActivity {
 
     private LinearLayout eventsContainer;
-    private ImageButton backButton;
 
     private DatabaseHelper databaseHelper;
 
@@ -59,9 +55,6 @@ public class MyEventsActivity extends AppCompatActivity {
 
         eventsContainer =
                 findViewById(R.id.eventsContainer);
-
-        backButton =
-                findViewById(R.id.backButton);
 
 
         // =====================================================
@@ -137,73 +130,10 @@ public class MyEventsActivity extends AppCompatActivity {
 
 
         // =====================================================
-        // BACK BUTTON
-        // =====================================================
-
-        backButton.setOnClickListener(v ->
-                goToStudentDashboard()
-        );
-
-
-        // =====================================================
-        // PHONE BACK BUTTON
-        // =====================================================
-
-        getOnBackPressedDispatcher().addCallback(
-                this,
-                new OnBackPressedCallback(true) {
-
-                    @Override
-                    public void handleOnBackPressed() {
-
-                        goToStudentDashboard();
-                    }
-                }
-        );
-
-
-        // =====================================================
         // LOAD MY EVENTS
         // =====================================================
 
         loadMyEvents();
-    }
-
-
-    // =====================================================
-    // GO TO STUDENT DASHBOARD
-    // =====================================================
-
-    private void goToStudentDashboard() {
-
-        Intent intent =
-                new Intent(
-                        MyEventsActivity.this,
-                        StudentDashboardActivity.class
-                );
-
-
-        intent.putExtra(
-                "USER_NAME",
-                studentName
-        );
-
-
-        intent.putExtra(
-                "email",
-                studentEmail
-        );
-
-
-        intent.addFlags(
-                Intent.FLAG_ACTIVITY_CLEAR_TOP |
-                        Intent.FLAG_ACTIVITY_SINGLE_TOP
-        );
-
-
-        startActivity(intent);
-
-        finish();
     }
 
 

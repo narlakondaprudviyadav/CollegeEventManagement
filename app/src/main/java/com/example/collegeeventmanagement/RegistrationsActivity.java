@@ -7,7 +7,6 @@ import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -19,7 +18,6 @@ public class RegistrationsActivity extends AppCompatActivity {
     // VIEWS
     // =====================================================
 
-    private ImageButton backButton;
     private LinearLayout registrationsContainer;
 
     // Admin bottom navigation
@@ -44,6 +42,10 @@ public class RegistrationsActivity extends AppCompatActivity {
     private String email;
 
 
+    // =====================================================
+    // ON CREATE
+    // =====================================================
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -65,11 +67,6 @@ public class RegistrationsActivity extends AppCompatActivity {
         // =====================================================
         // CONNECT VIEWS
         // =====================================================
-
-        backButton =
-                findViewById(
-                        R.id.backButton
-                );
 
         registrationsContainer =
                 findViewById(
@@ -117,6 +114,10 @@ public class RegistrationsActivity extends AppCompatActivity {
                 );
 
 
+        // =====================================================
+        // DEFAULT ADMIN DETAILS
+        // =====================================================
+
         if (userName == null ||
                 userName.trim().isEmpty()) {
 
@@ -142,15 +143,6 @@ public class RegistrationsActivity extends AppCompatActivity {
                 navProfile,
                 userName,
                 email
-        );
-
-
-        // =====================================================
-        // BACK BUTTON
-        // =====================================================
-
-        backButton.setOnClickListener(v ->
-                finish()
         );
 
 

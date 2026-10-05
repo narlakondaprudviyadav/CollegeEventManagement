@@ -1,7 +1,5 @@
 package com.example.collegeeventmanagement;
 
-import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -12,11 +10,9 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.text.ParseException;
@@ -27,7 +23,6 @@ import java.util.Locale;
 public class BrowseEventsActivity extends AppCompatActivity {
 
     private LinearLayout eventsContainer;
-    private ImageButton backButton;
     private DatabaseHelper databaseHelper;
 
     private String studentEmail;
@@ -81,11 +76,6 @@ public class BrowseEventsActivity extends AppCompatActivity {
         eventsContainer =
                 findViewById(
                         R.id.eventsContainer
-                );
-
-        backButton =
-                findViewById(
-                        R.id.backButton
                 );
 
 
@@ -174,100 +164,10 @@ public class BrowseEventsActivity extends AppCompatActivity {
 
 
         // =========================
-        // BACK BUTTON
-        // =========================
-
-        backButton.setImageResource(
-                R.drawable.ic_arrow_back
-        );
-
-        backButton.setImageTintList(
-                ColorStateList.valueOf(
-                        Color.WHITE
-                )
-        );
-
-        backButton.setVisibility(
-                View.VISIBLE
-        );
-
-        backButton.setAlpha(
-                1.0f
-        );
-
-        backButton.setClickable(
-                true
-        );
-
-        backButton.setFocusable(
-                true
-        );
-
-
-        backButton.setOnClickListener(v ->
-                goToStudentDashboard()
-        );
-
-
-        // =========================
-        // PHONE BACK BUTTON
-        // =========================
-
-        getOnBackPressedDispatcher().addCallback(
-                this,
-                new OnBackPressedCallback(true) {
-
-                    @Override
-                    public void handleOnBackPressed() {
-
-                        goToStudentDashboard();
-                    }
-                }
-        );
-
-
-        // =========================
         // LOAD EVENTS
         // =========================
 
         loadEvents();
-    }
-
-
-    // =====================================================
-    // GO TO STUDENT DASHBOARD
-    // =====================================================
-
-    private void goToStudentDashboard() {
-
-        Intent intent =
-                new Intent(
-                        BrowseEventsActivity.this,
-                        StudentDashboardActivity.class
-                );
-
-
-        intent.putExtra(
-                "USER_NAME",
-                studentName
-        );
-
-
-        intent.putExtra(
-                "email",
-                studentEmail
-        );
-
-
-        intent.addFlags(
-                Intent.FLAG_ACTIVITY_CLEAR_TOP |
-                        Intent.FLAG_ACTIVITY_SINGLE_TOP
-        );
-
-
-        startActivity(intent);
-
-        finish();
     }
 
 

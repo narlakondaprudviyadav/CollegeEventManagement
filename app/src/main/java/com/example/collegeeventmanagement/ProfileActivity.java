@@ -6,15 +6,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.OnBackPressedCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.Locale;
@@ -24,8 +20,8 @@ public class ProfileActivity extends AppCompatActivity {
     private TextView profileNameTextView;
     private TextView profileEmailTextView;
     private Button logoutButton;
-    private ImageButton backButton;
     private ImageView profileImageView;
+
 
     // =====================================================
     // STUDENT NAVIGATION
@@ -38,6 +34,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     private LinearLayout studentBottomNavigation;
 
+
     // =====================================================
     // ADMIN NAVIGATION
     // =====================================================
@@ -49,6 +46,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     private LinearLayout adminBottomNavigation;
 
+
     // =====================================================
     // USER DETAILS
     // =====================================================
@@ -59,11 +57,12 @@ public class ProfileActivity extends AppCompatActivity {
 
     private SharedPreferences preferences;
 
+
     // =====================================================
     // IMAGE PICKER
     // =====================================================
 
-    private ActivityResultLauncher<String[]> imagePickerLauncher;
+    private androidx.activity.result.ActivityResultLauncher<String[]> imagePickerLauncher;
 
 
     @Override
@@ -86,9 +85,6 @@ public class ProfileActivity extends AppCompatActivity {
 
         logoutButton =
                 findViewById(R.id.logoutButton);
-
-        backButton =
-                findViewById(R.id.backButton);
 
         profileImageView =
                 findViewById(R.id.profileImageView);
@@ -240,7 +236,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         imagePickerLauncher =
                 registerForActivityResult(
-                        new ActivityResultContracts.OpenDocument(),
+                        new androidx.activity.result.contract.ActivityResultContracts.OpenDocument(),
                         (Uri uri) -> {
 
                             if (uri != null) {
@@ -283,32 +279,6 @@ public class ProfileActivity extends AppCompatActivity {
 
             setupStudentNavigation();
         }
-
-
-        // =====================================================
-        // BACK BUTTON
-        // =====================================================
-
-        backButton.setOnClickListener(v ->
-                goToDashboard()
-        );
-
-
-        // =====================================================
-        // PHONE BACK BUTTON
-        // =====================================================
-
-        getOnBackPressedDispatcher().addCallback(
-                this,
-                new OnBackPressedCallback(true) {
-
-                    @Override
-                    public void handleOnBackPressed() {
-
-                        goToDashboard();
-                    }
-                }
-        );
 
 
         // =====================================================
@@ -447,6 +417,7 @@ public class ProfileActivity extends AppCompatActivity {
             } catch (Exception e) {
 
                 showDefaultProfileIcon();
+
             }
 
         } else {
@@ -485,61 +456,6 @@ public class ProfileActivity extends AppCompatActivity {
         profileImageView.setScaleType(
                 ImageView.ScaleType.CENTER
         );
-    }
-
-
-    // =====================================================
-    // GO TO CORRECT DASHBOARD
-    // =====================================================
-
-    private void goToDashboard() {
-
-        Intent intent;
-
-
-        if (userRole.equalsIgnoreCase("Admin")) {
-
-            intent =
-                    new Intent(
-                            ProfileActivity.this,
-                            AdminDashboardActivity.class
-                    );
-
-        } else {
-
-            intent =
-                    new Intent(
-                            ProfileActivity.this,
-                            StudentDashboardActivity.class
-                    );
-        }
-
-
-        intent.putExtra(
-                "USER_NAME",
-                userName
-        );
-
-        intent.putExtra(
-                "email",
-                email
-        );
-
-        intent.putExtra(
-                "USER_ROLE",
-                userRole
-        );
-
-
-        intent.addFlags(
-                Intent.FLAG_ACTIVITY_CLEAR_TOP |
-                        Intent.FLAG_ACTIVITY_SINGLE_TOP
-        );
-
-
-        startActivity(intent);
-
-        finish();
     }
 
 
