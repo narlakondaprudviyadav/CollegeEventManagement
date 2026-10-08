@@ -1,15 +1,19 @@
 package com.example.collegeeventmanagement;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -22,26 +26,41 @@ import java.util.Locale;
 
 public class BrowseEventsActivity extends AppCompatActivity {
 
+    // =====================================================
+    // VIEWS
+    // =====================================================
+
     private LinearLayout eventsContainer;
+    private EditText searchEventsEditText;
+
+    private TextView filterAll;
+    private TextView filterUpcoming;
+    private TextView filterFull;
+    private TextView filterCompleted;
+
     private DatabaseHelper databaseHelper;
 
     private String studentEmail;
     private String studentName;
 
+    // =====================================================
+    // CURRENT FILTER
+    // =====================================================
 
-    // =========================
+    private String selectedFilter = "ALL";
+
+    // =====================================================
     // BOTTOM NAVIGATION
-    // =========================
+    // =====================================================
 
     private LinearLayout navHome;
     private LinearLayout navEvents;
     private LinearLayout navMyEvents;
     private LinearLayout navProfile;
 
-
-    // =========================
+    // =====================================================
     // COLORS
-    // =========================
+    // =====================================================
 
     private final int PURPLE =
             Color.rgb(107, 77, 181);
@@ -58,6 +77,9 @@ public class BrowseEventsActivity extends AppCompatActivity {
     private final int GRAY_TEXT =
             Color.rgb(100, 96, 105);
 
+    // =====================================================
+    // ON CREATE
+    // =====================================================
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,20 +90,43 @@ public class BrowseEventsActivity extends AppCompatActivity {
                 R.layout.activity_browse_events
         );
 
-
-        // =========================
+        // =====================================================
         // CONNECT VIEWS
-        // =========================
+        // =====================================================
 
         eventsContainer =
                 findViewById(
                         R.id.eventsContainer
                 );
 
+        searchEventsEditText =
+                findViewById(
+                        R.id.searchEventsEditText
+                );
 
-        // =========================
+        filterAll =
+                findViewById(
+                        R.id.filterAll
+                );
+
+        filterUpcoming =
+                findViewById(
+                        R.id.filterUpcoming
+                );
+
+        filterFull =
+                findViewById(
+                        R.id.filterFull
+                );
+
+        filterCompleted =
+                findViewById(
+                        R.id.filterCompleted
+                );
+
+        // =====================================================
         // BOTTOM NAVIGATION
-        // =========================
+        // =====================================================
 
         navHome =
                 findViewById(
@@ -103,18 +148,16 @@ public class BrowseEventsActivity extends AppCompatActivity {
                         R.id.navProfile
                 );
 
-
-        // =========================
+        // =====================================================
         // DATABASE
-        // =========================
+        // =====================================================
 
         databaseHelper =
                 new DatabaseHelper(this);
 
-
-        // =========================
+        // =====================================================
         // GET STUDENT DETAILS
-        // =========================
+        // =====================================================
 
         studentEmail =
                 getIntent().getStringExtra(
@@ -126,10 +169,9 @@ public class BrowseEventsActivity extends AppCompatActivity {
                         "USER_NAME"
                 );
 
-
-        // =========================
+        // =====================================================
         // DEFAULT STUDENT NAME
-        // =========================
+        // =====================================================
 
         if (studentName == null ||
                 studentName.trim().isEmpty()) {
@@ -137,16 +179,14 @@ public class BrowseEventsActivity extends AppCompatActivity {
             studentName = "Student";
         }
 
-
-        // =========================
+        // =====================================================
         // DEFAULT EMAIL
-        // =========================
+        // =====================================================
 
         if (studentEmail == null) {
 
             studentEmail = "";
         }
-
 
         // =====================================================
         // REUSABLE STUDENT BOTTOM NAVIGATION
@@ -162,17 +202,113 @@ public class BrowseEventsActivity extends AppCompatActivity {
                 studentEmail
         );
 
+        // =====================================================
+        // SEARCH FUNCTIONALITY
+        // =====================================================
 
-        // =========================
+        searchEventsEditText.addTextChangedListener(
+                new TextWatcher() {
+
+                    @Override
+                    public void beforeTextChanged(
+                            CharSequence s,
+                            int start,
+                            int count,
+                            int after) {
+                    }
+
+                    @Override
+                    public void onTextChanged(
+                            CharSequence s,
+                            int start,
+                            int before,
+                            int count) {
+
+                        refreshEvents();
+                    }
+
+                    @Override
+                    public void afterTextChanged(
+                            Editable s) {
+                    }
+                }
+        );
+
+        // =====================================================
+        // FILTER BUTTONS
+        // =====================================================
+
+        filterAll.setOnClickListener(v -> {
+
+            selectedFilter = "ALL";
+
+            updateFilterAppearance();
+
+            refreshEvents();
+        });
+
+        filterUpcoming.setOnClickListener(v -> {
+
+            selectedFilter = "UPCOMING";
+
+            updateFilterAppearance();
+
+            refreshEvents();
+        });
+
+        filterFull.setOnClickListener(v -> {
+
+            selectedFilter = "FULL";
+
+            updateFilterAppearance();
+
+            refreshEvents();
+        });
+
+        filterCompleted.setOnClickListener(v -> {
+
+            selectedFilter = "COMPLETED";
+
+            updateFilterAppearance();
+
+            refreshEvents();
+        });
+
+        // =====================================================
+        // INITIAL FILTER APPEARANCE
+        // =====================================================
+
+        updateFilterAppearance();
+
+        // =====================================================
         // LOAD EVENTS
-        // =========================
+        // =====================================================
 
-        loadEvents();
+        loadEvents("");
     }
-
 
     // =====================================================
     // REFRESH EVENTS
+    // =====================================================
+
+    private void refreshEvents() {
+
+        String currentSearch = "";
+
+        if (searchEventsEditText != null) {
+
+            currentSearch =
+                    searchEventsEditText
+                            .getText()
+                            .toString()
+                            .trim();
+        }
+
+        loadEvents(currentSearch);
+    }
+
+    // =====================================================
+    // REFRESH WHEN ACTIVITY RESUMES
     // =====================================================
 
     @Override
@@ -183,44 +319,59 @@ public class BrowseEventsActivity extends AppCompatActivity {
         if (eventsContainer != null &&
                 databaseHelper != null) {
 
-            loadEvents();
+            refreshEvents();
         }
     }
 
-
     // =====================================================
     // LOAD EVENTS
+    // SEARCH + FILTER
     // =====================================================
 
-    private void loadEvents() {
+    private void loadEvents(
+            String searchQuery) {
 
         eventsContainer.removeAllViews();
 
-
         Cursor cursor =
                 databaseHelper.getAllEvents();
-
 
         if (cursor == null ||
                 cursor.getCount() == 0) {
 
             showNoEvents();
 
-
             if (cursor != null) {
-
                 cursor.close();
             }
 
             return;
         }
 
+        // =====================================================
+        // NORMALIZE SEARCH
+        // =====================================================
+
+        String query =
+                searchQuery == null
+                        ? ""
+                        : searchQuery
+                        .trim()
+                        .toLowerCase(
+                                Locale.ROOT
+                        );
+
+        int matchingEvents = 0;
+
+        // =====================================================
+        // READ EVENTS
+        // =====================================================
 
         while (cursor.moveToNext()) {
 
-            // =========================
+            // =================================================
             // EVENT ID
-            // =========================
+            // =================================================
 
             int eventId =
                     cursor.getInt(
@@ -229,10 +380,9 @@ public class BrowseEventsActivity extends AppCompatActivity {
                             )
                     );
 
-
-            // =========================
+            // =================================================
             // EVENT NAME
-            // =========================
+            // =================================================
 
             String eventName =
                     cursor.getString(
@@ -241,10 +391,9 @@ public class BrowseEventsActivity extends AppCompatActivity {
                             )
                     );
 
-
-            // =========================
+            // =================================================
             // DESCRIPTION
-            // =========================
+            // =================================================
 
             String description =
                     cursor.getString(
@@ -253,10 +402,9 @@ public class BrowseEventsActivity extends AppCompatActivity {
                             )
                     );
 
-
-            // =========================
+            // =================================================
             // EVENT DATE
-            // =========================
+            // =================================================
 
             String eventDate =
                     cursor.getString(
@@ -265,10 +413,9 @@ public class BrowseEventsActivity extends AppCompatActivity {
                             )
                     );
 
-
-            // =========================
+            // =================================================
             // EVENT TIME
-            // =========================
+            // =================================================
 
             String eventTime =
                     cursor.getString(
@@ -277,10 +424,9 @@ public class BrowseEventsActivity extends AppCompatActivity {
                             )
                     );
 
-
-            // =========================
+            // =================================================
             // VENUE
-            // =========================
+            // =================================================
 
             String venue =
                     cursor.getString(
@@ -289,10 +435,9 @@ public class BrowseEventsActivity extends AppCompatActivity {
                             )
                     );
 
-
-            // =========================
+            // =================================================
             // ORGANIZER
-            // =========================
+            // =================================================
 
             String organizer =
                     cursor.getString(
@@ -301,26 +446,95 @@ public class BrowseEventsActivity extends AppCompatActivity {
                             )
                     );
 
-
-            // =========================
+            // =================================================
             // REGISTRATION COUNT
-            // =========================
+            // =================================================
 
             int registeredCount =
                     databaseHelper.getEventRegistrationCount(
                             eventId
                     );
 
-
-            // =========================
+            // =================================================
             // MAX REGISTRATIONS
-            // =========================
+            // =================================================
 
             int maxRegistrations =
                     databaseHelper.getEventMaxRegistrations(
                             eventId
                     );
 
+            // =================================================
+            // EVENT STATUS
+            // =================================================
+
+            String eventStatus =
+                    getEventStatus(
+                            eventDate,
+                            eventTime
+                    );
+
+            // =================================================
+            // FULL STATUS
+            // =================================================
+
+            boolean eventFull =
+                    registeredCount >=
+                            maxRegistrations;
+
+            // =================================================
+            // SEARCH FILTER
+            // =================================================
+
+            if (!query.isEmpty()) {
+
+                String searchableText =
+                        safeLower(eventName) + " " +
+                                safeLower(description) + " " +
+                                safeLower(venue) + " " +
+                                safeLower(organizer);
+
+                if (!searchableText.contains(query)) {
+
+                    continue;
+                }
+            }
+
+            // =================================================
+            // SELECTED FILTER
+            // =================================================
+
+            if (selectedFilter.equals("UPCOMING")) {
+
+                if (!eventStatus.equals("UPCOMING")) {
+
+                    continue;
+                }
+
+            } else if (selectedFilter.equals("FULL")) {
+
+                if (!eventFull) {
+
+                    continue;
+                }
+
+            } else if (selectedFilter.equals("COMPLETED")) {
+
+                if (!eventStatus.equals("COMPLETED")) {
+
+                    continue;
+                }
+            }
+
+            // =================================================
+            // EVENT MATCHED
+            // =================================================
+
+            matchingEvents++;
+
+            // =================================================
+            // ADD EVENT CARD
+            // =================================================
 
             addEventCard(
                     eventId,
@@ -335,10 +549,113 @@ public class BrowseEventsActivity extends AppCompatActivity {
             );
         }
 
-
         cursor.close();
+
+        // =====================================================
+        // NO RESULTS
+        // =====================================================
+
+        if (matchingEvents == 0) {
+
+            if (!query.isEmpty()) {
+
+                showNoSearchResults(query);
+
+            } else {
+
+                showNoFilterResults();
+            }
+        }
     }
 
+    // =====================================================
+    // SAFE LOWERCASE
+    // =====================================================
+
+    private String safeLower(
+            String value) {
+
+        if (value == null) {
+
+            return "";
+        }
+
+        return value.toLowerCase(
+                Locale.ROOT
+        );
+    }
+
+    // =====================================================
+    // FILTER APPEARANCE
+    // =====================================================
+
+    private void updateFilterAppearance() {
+
+        setFilterStyle(
+                filterAll,
+                selectedFilter.equals("ALL")
+        );
+
+        setFilterStyle(
+                filterUpcoming,
+                selectedFilter.equals("UPCOMING")
+        );
+
+        setFilterStyle(
+                filterFull,
+                selectedFilter.equals("FULL")
+        );
+
+        setFilterStyle(
+                filterCompleted,
+                selectedFilter.equals("COMPLETED")
+        );
+    }
+
+    // =====================================================
+    // SET FILTER STYLE
+    // =====================================================
+
+    private void setFilterStyle(
+            TextView filter,
+            boolean active) {
+
+        if (filter == null) {
+
+            return;
+        }
+
+        if (active) {
+
+            filter.setTextColor(
+                    Color.WHITE
+            );
+
+            filter.setTypeface(
+                    null,
+                    Typeface.BOLD
+            );
+
+            filter.setBackgroundResource(
+                    R.drawable.filter_active_background
+            );
+
+        } else {
+
+            filter.setTextColor(
+                    PURPLE
+            );
+
+            filter.setTypeface(
+                    null,
+                    Typeface.NORMAL
+            );
+
+            filter.setBackgroundResource(
+                    R.drawable.filter_inactive_background
+            );
+        }
+    }
 
     // =====================================================
     // CREATE EVENT CARD
@@ -355,10 +672,9 @@ public class BrowseEventsActivity extends AppCompatActivity {
             int registeredCount,
             int maxRegistrations) {
 
-
-        // =========================
+        // =====================================================
         // CARD
-        // =========================
+        // =====================================================
 
         LinearLayout card =
                 new LinearLayout(this);
@@ -374,10 +690,9 @@ public class BrowseEventsActivity extends AppCompatActivity {
                 dp(16)
         );
 
-
-        // =========================
+        // =====================================================
         // CARD BACKGROUND
-        // =========================
+        // =====================================================
 
         GradientDrawable cardBackground =
                 new GradientDrawable();
@@ -392,7 +707,11 @@ public class BrowseEventsActivity extends AppCompatActivity {
 
         cardBackground.setStroke(
                 dp(1),
-                Color.rgb(232, 226, 243)
+                Color.rgb(
+                        232,
+                        226,
+                        243
+                )
         );
 
         card.setBackground(
@@ -403,6 +722,9 @@ public class BrowseEventsActivity extends AppCompatActivity {
                 dp(3)
         );
 
+        // =====================================================
+        // CARD MARGINS
+        // =====================================================
 
         LinearLayout.LayoutParams cardParams =
                 new LinearLayout.LayoutParams(
@@ -421,10 +743,9 @@ public class BrowseEventsActivity extends AppCompatActivity {
                 cardParams
         );
 
-
-        // =========================
+        // =====================================================
         // HEADER
-        // =========================
+        // =====================================================
 
         LinearLayout header =
                 new LinearLayout(this);
@@ -436,7 +757,6 @@ public class BrowseEventsActivity extends AppCompatActivity {
         header.setGravity(
                 Gravity.CENTER_VERTICAL
         );
-
 
         TextView nameView =
                 new TextView(this);
@@ -462,7 +782,6 @@ public class BrowseEventsActivity extends AppCompatActivity {
                 2
         );
 
-
         LinearLayout.LayoutParams nameParams =
                 new LinearLayout.LayoutParams(
                         0,
@@ -478,10 +797,9 @@ public class BrowseEventsActivity extends AppCompatActivity {
                 nameView
         );
 
-
-        // =========================
+        // =====================================================
         // STATUS
-        // =========================
+        // =====================================================
 
         String eventStatus =
                 getEventStatus(
@@ -489,26 +807,22 @@ public class BrowseEventsActivity extends AppCompatActivity {
                         eventTime
                 );
 
-
         LinearLayout statusPill =
                 createStatusPill(
                         eventStatus
                 );
 
-
         header.addView(
                 statusPill
         );
-
 
         card.addView(
                 header
         );
 
-
-        // =========================
+        // =====================================================
         // DESCRIPTION
-        // =========================
+        // =====================================================
 
         TextView descriptionView =
                 new TextView(this);
@@ -540,10 +854,9 @@ public class BrowseEventsActivity extends AppCompatActivity {
                 descriptionView
         );
 
-
-        // =========================
+        // =====================================================
         // EVENT DETAILS
-        // =========================
+        // =====================================================
 
         LinearLayout detailsLayout =
                 new LinearLayout(this);
@@ -552,13 +865,11 @@ public class BrowseEventsActivity extends AppCompatActivity {
                 LinearLayout.VERTICAL
         );
 
-
         detailsLayout.addView(
                 createDetailText(
                         "📅  " + eventDate
                 )
         );
-
 
         detailsLayout.addView(
                 createDetailText(
@@ -566,13 +877,11 @@ public class BrowseEventsActivity extends AppCompatActivity {
                 )
         );
 
-
         detailsLayout.addView(
                 createDetailText(
                         "📍  " + venue
                 )
         );
-
 
         detailsLayout.addView(
                 createDetailText(
@@ -580,15 +889,13 @@ public class BrowseEventsActivity extends AppCompatActivity {
                 )
         );
 
-
         card.addView(
                 detailsLayout
         );
 
-
-        // =========================
+        // =====================================================
         // REGISTRATION HEADER
-        // =========================
+        // =====================================================
 
         LinearLayout registrationHeader =
                 new LinearLayout(this);
@@ -600,7 +907,6 @@ public class BrowseEventsActivity extends AppCompatActivity {
         registrationHeader.setGravity(
                 Gravity.CENTER_VERTICAL
         );
-
 
         LinearLayout.LayoutParams registrationHeaderParams =
                 new LinearLayout.LayoutParams(
@@ -618,7 +924,6 @@ public class BrowseEventsActivity extends AppCompatActivity {
         registrationHeader.setLayoutParams(
                 registrationHeaderParams
         );
-
 
         TextView registrationTitle =
                 new TextView(this);
@@ -640,7 +945,6 @@ public class BrowseEventsActivity extends AppCompatActivity {
                 Typeface.BOLD
         );
 
-
         LinearLayout.LayoutParams titleParams =
                 new LinearLayout.LayoutParams(
                         0,
@@ -652,11 +956,9 @@ public class BrowseEventsActivity extends AppCompatActivity {
                 titleParams
         );
 
-
         registrationHeader.addView(
                 registrationTitle
         );
-
 
         TextView registrationCountText =
                 new TextView(this);
@@ -680,20 +982,17 @@ public class BrowseEventsActivity extends AppCompatActivity {
                 Typeface.BOLD
         );
 
-
         registrationHeader.addView(
                 registrationCountText
         );
-
 
         card.addView(
                 registrationHeader
         );
 
-
-        // =========================
+        // =====================================================
         // PROGRESS BAR
-        // =========================
+        // =====================================================
 
         LinearLayout progressBackground =
                 new LinearLayout(this);
@@ -701,7 +1000,6 @@ public class BrowseEventsActivity extends AppCompatActivity {
         progressBackground.setOrientation(
                 LinearLayout.HORIZONTAL
         );
-
 
         GradientDrawable progressBg =
                 new GradientDrawable();
@@ -718,11 +1016,9 @@ public class BrowseEventsActivity extends AppCompatActivity {
                 dp(6)
         );
 
-
         progressBackground.setBackground(
                 progressBg
         );
-
 
         LinearLayout.LayoutParams progressParams =
                 new LinearLayout.LayoutParams(
@@ -730,14 +1026,11 @@ public class BrowseEventsActivity extends AppCompatActivity {
                         dp(7)
                 );
 
-
         progressBackground.setLayoutParams(
                 progressParams
         );
 
-
         float percentage = 0;
-
 
         if (maxRegistrations > 0) {
 
@@ -751,11 +1044,9 @@ public class BrowseEventsActivity extends AppCompatActivity {
             }
         }
 
-
         View progressFill;
 
         LinearLayout.LayoutParams fillParams;
-
 
         if (registeredCount > 0) {
 
@@ -782,11 +1073,9 @@ public class BrowseEventsActivity extends AppCompatActivity {
                     );
         }
 
-
         progressFill.setLayoutParams(
                 fillParams
         );
-
 
         GradientDrawable fillBackground =
                 new GradientDrawable();
@@ -794,7 +1083,6 @@ public class BrowseEventsActivity extends AppCompatActivity {
         fillBackground.setCornerRadius(
                 dp(6)
         );
-
 
         if (registeredCount >=
                 maxRegistrations) {
@@ -810,40 +1098,33 @@ public class BrowseEventsActivity extends AppCompatActivity {
             );
         }
 
-
         progressFill.setBackground(
                 fillBackground
         );
-
 
         progressBackground.addView(
                 progressFill
         );
 
-
         card.addView(
                 progressBackground
         );
 
-
-        // =========================
+        // =====================================================
         // SPOTS LEFT
-        // =========================
+        // =====================================================
 
         TextView spotsText =
                 new TextView(this);
-
 
         int spotsLeft =
                 maxRegistrations -
                         registeredCount;
 
-
         if (spotsLeft < 0) {
 
             spotsLeft = 0;
         }
-
 
         if (registeredCount >=
                 maxRegistrations) {
@@ -872,7 +1153,6 @@ public class BrowseEventsActivity extends AppCompatActivity {
             );
         }
 
-
         spotsText.setTextSize(
                 11
         );
@@ -888,15 +1168,13 @@ public class BrowseEventsActivity extends AppCompatActivity {
                 0
         );
 
-
         card.addView(
                 spotsText
         );
 
-
-        // =========================
+        // =====================================================
         // REGISTER BUTTON
-        // =========================
+        // =====================================================
 
         Button registerButton =
                 new Button(this);
@@ -937,13 +1215,11 @@ public class BrowseEventsActivity extends AppCompatActivity {
                 0
         );
 
-
         LinearLayout.LayoutParams buttonParams =
                 new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
                         dp(44)
                 );
-
 
         buttonParams.setMargins(
                 0,
@@ -951,7 +1227,6 @@ public class BrowseEventsActivity extends AppCompatActivity {
                 0,
                 0
         );
-
 
         registerButton.setLayoutParams(
                 buttonParams
@@ -965,10 +1240,9 @@ public class BrowseEventsActivity extends AppCompatActivity {
                 null
         );
 
-
-        // =========================
+        // =====================================================
         // CHECK REGISTRATION
-        // =========================
+        // =====================================================
 
         boolean alreadyRegistered =
                 databaseHelper.isStudentRegistered(
@@ -976,15 +1250,13 @@ public class BrowseEventsActivity extends AppCompatActivity {
                         studentEmail
                 );
 
-
         boolean eventFull =
                 registeredCount >=
                         maxRegistrations;
 
-
-        // =========================
+        // =====================================================
         // COMPLETED EVENT
-        // =========================
+        // =====================================================
 
         if (eventStatus.equals(
                 "COMPLETED"
@@ -1006,12 +1278,12 @@ public class BrowseEventsActivity extends AppCompatActivity {
             registerButton.setClickable(
                     false
             );
+
         }
 
-
-        // =========================
+        // =====================================================
         // ALREADY REGISTERED
-        // =========================
+        // =====================================================
 
         else if (alreadyRegistered) {
 
@@ -1027,12 +1299,12 @@ public class BrowseEventsActivity extends AppCompatActivity {
             registerButton.setEnabled(
                     false
             );
+
         }
 
-
-        // =========================
+        // =====================================================
         // FULL
-        // =========================
+        // =====================================================
 
         else if (eventFull) {
 
@@ -1048,12 +1320,12 @@ public class BrowseEventsActivity extends AppCompatActivity {
             registerButton.setEnabled(
                     false
             );
+
         }
 
-
-        // =========================
+        // =====================================================
         // AVAILABLE
-        // =========================
+        // =====================================================
 
         else {
 
@@ -1074,19 +1346,17 @@ public class BrowseEventsActivity extends AppCompatActivity {
                     true
             );
 
-
             registerButton.setOnClickListener(v -> {
 
-                // =========================
+                // =============================================
                 // RECHECK EVENT STATUS
-                // =========================
+                // =============================================
 
                 String currentStatus =
                         getEventStatus(
                                 eventDate,
                                 eventTime
                         );
-
 
                 if (currentStatus.equals(
                         "COMPLETED"
@@ -1112,10 +1382,9 @@ public class BrowseEventsActivity extends AppCompatActivity {
                     return;
                 }
 
-
-                // =========================
+                // =============================================
                 // REGISTER STUDENT
-                // =========================
+                // =============================================
 
                 boolean success =
                         databaseHelper.registerForEvent(
@@ -1124,16 +1393,15 @@ public class BrowseEventsActivity extends AppCompatActivity {
                                 studentEmail
                         );
 
-
-                // =========================
+                // =============================================
                 // SUCCESS
-                // =========================
+                // =============================================
 
                 if (success) {
 
-                    // =========================
+                    // =========================================
                     // SCHEDULE REMINDER
-                    // =========================
+                    // =========================================
 
                     EventReminderScheduler.scheduleReminder(
                             BrowseEventsActivity.this,
@@ -1144,10 +1412,9 @@ public class BrowseEventsActivity extends AppCompatActivity {
                             venue
                     );
 
-
-                    // =========================
+                    // =========================================
                     // UPDATE COUNT
-                    // =========================
+                    // =========================================
 
                     int updatedCount =
                             databaseHelper
@@ -1155,28 +1422,24 @@ public class BrowseEventsActivity extends AppCompatActivity {
                                             eventId
                                     );
 
-
                     registrationCountText.setText(
                             updatedCount +
                                     " / " +
                                     maxRegistrations
                     );
 
-
                     int updatedSpots =
                             maxRegistrations -
                                     updatedCount;
-
 
                     if (updatedSpots < 0) {
 
                         updatedSpots = 0;
                     }
 
-
-                    // =========================
+                    // =========================================
                     // CAPACITY REACHED
-                    // =========================
+                    // =========================================
 
                     if (updatedCount >=
                             maxRegistrations) {
@@ -1194,7 +1457,6 @@ public class BrowseEventsActivity extends AppCompatActivity {
                                 false
                         );
 
-
                         spotsText.setText(
                                 "FULL • No spots left"
                         );
@@ -1202,12 +1464,12 @@ public class BrowseEventsActivity extends AppCompatActivity {
                         spotsText.setTextColor(
                                 RED
                         );
+
                     }
 
-
-                    // =========================
+                    // =========================================
                     // REGISTERED
-                    // =========================
+                    // =========================================
 
                     else {
 
@@ -1224,7 +1486,6 @@ public class BrowseEventsActivity extends AppCompatActivity {
                                 false
                         );
 
-
                         spotsText.setText(
                                 updatedSpots +
                                         " spot" +
@@ -1234,12 +1495,12 @@ public class BrowseEventsActivity extends AppCompatActivity {
                                         " left"
                         );
                     }
+
                 }
 
-
-                // =========================
+                // =============================================
                 // REGISTRATION FAILED
-                // =========================
+                // =============================================
 
                 else {
 
@@ -1250,20 +1511,17 @@ public class BrowseEventsActivity extends AppCompatActivity {
                                             studentEmail
                                     );
 
-
                     int currentCount =
                             databaseHelper
                                     .getEventRegistrationCount(
                                             eventId
                                     );
 
-
                     registrationCountText.setText(
                             currentCount +
                                     " / " +
                                     maxRegistrations
                     );
-
 
                     if (nowRegistered) {
 
@@ -1302,25 +1560,98 @@ public class BrowseEventsActivity extends AppCompatActivity {
             });
         }
 
+        // =====================================================
+        // OPEN EVENT DETAILS
+        // =====================================================
 
-        // =========================
+        card.setClickable(true);
+        card.setFocusable(true);
+
+        card.setOnClickListener(v -> {
+
+            Intent intent =
+                    new Intent(
+                            BrowseEventsActivity.this,
+                            EventDetailsActivity.class
+                    );
+
+            // =================================================
+            // EVENT INFORMATION
+            // =================================================
+
+            intent.putExtra(
+                    "EVENT_ID",
+                    eventId
+            );
+
+            intent.putExtra(
+                    "EVENT_NAME",
+                    eventName
+            );
+
+            intent.putExtra(
+                    "DESCRIPTION",
+                    description
+            );
+
+            intent.putExtra(
+                    "EVENT_DATE",
+                    eventDate
+            );
+
+            intent.putExtra(
+                    "EVENT_TIME",
+                    eventTime
+            );
+
+            intent.putExtra(
+                    "VENUE",
+                    venue
+            );
+
+            intent.putExtra(
+                    "ORGANIZER",
+                    organizer
+            );
+
+            intent.putExtra(
+                    "MAX_REGISTRATIONS",
+                    maxRegistrations
+            );
+
+            // =================================================
+            // STUDENT INFORMATION
+            // =================================================
+
+            intent.putExtra(
+                    "USER_NAME",
+                    studentName
+            );
+
+            intent.putExtra(
+                    "email",
+                    studentEmail
+            );
+
+            startActivity(intent);
+        });
+
+        // =====================================================
         // ADD BUTTON
-        // =========================
+        // =====================================================
 
         card.addView(
                 registerButton
         );
 
-
-        // =========================
+        // =====================================================
         // ADD CARD
-        // =========================
+        // =====================================================
 
         eventsContainer.addView(
                 card
         );
     }
-
 
     // =====================================================
     // STATUS PILL
@@ -1347,7 +1678,6 @@ public class BrowseEventsActivity extends AppCompatActivity {
                 dp(4)
         );
 
-
         GradientDrawable pillBackground =
                 new GradientDrawable();
 
@@ -1355,10 +1685,9 @@ public class BrowseEventsActivity extends AppCompatActivity {
                 dp(20)
         );
 
-
-        // =========================
+        // =====================================================
         // DOT
-        // =========================
+        // =====================================================
 
         View dot =
                 new View(this);
@@ -1380,7 +1709,6 @@ public class BrowseEventsActivity extends AppCompatActivity {
                 dotParams
         );
 
-
         GradientDrawable dotBackground =
                 new GradientDrawable();
 
@@ -1388,10 +1716,9 @@ public class BrowseEventsActivity extends AppCompatActivity {
                 GradientDrawable.OVAL
         );
 
-
-        // =========================
+        // =====================================================
         // STATUS TEXT
-        // =========================
+        // =====================================================
 
         TextView text =
                 new TextView(this);
@@ -1409,10 +1736,9 @@ public class BrowseEventsActivity extends AppCompatActivity {
                 Typeface.BOLD
         );
 
-
-        // =========================
+        // =====================================================
         // UPCOMING
-        // =========================
+        // =====================================================
 
         if (status.equals(
                 "UPCOMING"
@@ -1434,7 +1760,6 @@ public class BrowseEventsActivity extends AppCompatActivity {
                     GREEN
             );
 
-
             try {
 
                 Animation pulseAnimation =
@@ -1453,10 +1778,9 @@ public class BrowseEventsActivity extends AppCompatActivity {
             }
         }
 
-
-        // =========================
+        // =====================================================
         // COMPLETED
-        // =========================
+        // =====================================================
 
         else {
 
@@ -1487,10 +1811,9 @@ public class BrowseEventsActivity extends AppCompatActivity {
             dot.clearAnimation();
         }
 
-
-        // =========================
+        // =====================================================
         // FINISH STATUS PILL
-        // =========================
+        // =====================================================
 
         dot.setBackground(
                 dotBackground
@@ -1508,10 +1831,8 @@ public class BrowseEventsActivity extends AppCompatActivity {
                 text
         );
 
-
         return pill;
     }
-
 
     // =====================================================
     // EVENT STATUS
@@ -1528,7 +1849,6 @@ public class BrowseEventsActivity extends AppCompatActivity {
                             " " +
                             eventTime;
 
-
             SimpleDateFormat format =
                     new SimpleDateFormat(
                             "d/M/yyyy HH:mm",
@@ -1539,16 +1859,13 @@ public class BrowseEventsActivity extends AppCompatActivity {
                     false
             );
 
-
             Date eventDateTimeObject =
                     format.parse(
                             eventDateTime
                     );
 
-
             Date currentDateTime =
                     new Date();
-
 
             if (eventDateTimeObject != null &&
                     currentDateTime.before(
@@ -1567,7 +1884,6 @@ public class BrowseEventsActivity extends AppCompatActivity {
             return "UPCOMING";
         }
     }
-
 
     // =====================================================
     // DETAIL TEXT
@@ -1598,10 +1914,8 @@ public class BrowseEventsActivity extends AppCompatActivity {
                 dp(2)
         );
 
-
         return textView;
     }
-
 
     // =====================================================
     // BUTTON BACKGROUND
@@ -1662,7 +1976,6 @@ public class BrowseEventsActivity extends AppCompatActivity {
         );
     }
 
-
     // =====================================================
     // NO EVENTS
     // =====================================================
@@ -1700,6 +2013,110 @@ public class BrowseEventsActivity extends AppCompatActivity {
         );
     }
 
+    // =====================================================
+    // NO SEARCH RESULTS
+    // =====================================================
+
+    private void showNoSearchResults(
+            String query) {
+
+        TextView noResults =
+                new TextView(this);
+
+        noResults.setText(
+                "🔍\n\nNo events found\n\n" +
+                        "No events match \"" +
+                        query +
+                        "\"."
+        );
+
+        noResults.setTextSize(
+                16
+        );
+
+        noResults.setTextColor(
+                GRAY_TEXT
+        );
+
+        noResults.setGravity(
+                Gravity.CENTER
+        );
+
+        noResults.setPadding(
+                dp(25),
+                dp(70),
+                dp(25),
+                dp(30)
+        );
+
+        eventsContainer.addView(
+                noResults
+        );
+    }
+
+    // =====================================================
+    // NO FILTER RESULTS
+    // =====================================================
+
+    private void showNoFilterResults() {
+
+        TextView noResults =
+                new TextView(this);
+
+        String message;
+
+        if (selectedFilter.equals("UPCOMING")) {
+
+            message =
+                    "📅\n\nNo upcoming events\n\n" +
+                            "There are no upcoming events right now.";
+
+        } else if (selectedFilter.equals("FULL")) {
+
+            message =
+                    "👥\n\nNo full events\n\n" +
+                            "No events have reached full capacity.";
+
+        } else if (selectedFilter.equals("COMPLETED")) {
+
+            message =
+                    "✓\n\nNo completed events\n\n" +
+                            "No completed events are available.";
+
+        } else {
+
+            message =
+                    "🎉\n\nNo events available yet.\n" +
+                            "Check back soon!";
+        }
+
+        noResults.setText(
+                message
+        );
+
+        noResults.setTextSize(
+                16
+        );
+
+        noResults.setTextColor(
+                GRAY_TEXT
+        );
+
+        noResults.setGravity(
+                Gravity.CENTER
+        );
+
+        noResults.setPadding(
+                dp(25),
+                dp(70),
+                dp(25),
+                dp(30)
+        );
+
+        eventsContainer.addView(
+                noResults
+        );
+    }
 
     // =====================================================
     // DP CONVERSION

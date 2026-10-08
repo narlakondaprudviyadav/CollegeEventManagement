@@ -11,6 +11,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class StudentDashboardActivity extends AppCompatActivity {
 
+    // =====================================================
+    // VIEWS
+    // =====================================================
+
     TextView studentNameTextView;
     TextView upcomingEventsCount;
 
@@ -25,97 +29,146 @@ public class StudentDashboardActivity extends AppCompatActivity {
     LinearLayout navMyEvents;
     LinearLayout navProfile;
 
+    // =====================================================
+    // DATABASE
+    // =====================================================
+
     DatabaseHelper databaseHelper;
+
+    // =====================================================
+    // STUDENT DETAILS
+    // =====================================================
 
     String userName;
     String email;
 
 
+    // =====================================================
+    // ON CREATE
+    // =====================================================
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_student_dashboard);
+        setContentView(
+                R.layout.activity_student_dashboard
+        );
 
 
-        // =========================
+        // =====================================================
         // DATABASE
-        // =========================
+        // =====================================================
 
         databaseHelper = new DatabaseHelper(this);
 
 
-        // =========================
+        // =====================================================
         // CONNECT XML VIEWS
-        // =========================
+        // =====================================================
 
         studentNameTextView =
-                findViewById(R.id.studentNameTextView);
+                findViewById(
+                        R.id.studentNameTextView
+                );
 
         upcomingEventsCount =
-                findViewById(R.id.upcomingEventsCount);
+                findViewById(
+                        R.id.upcomingEventsCount
+                );
 
         notificationIcon =
-                findViewById(R.id.notificationIcon);
+                findViewById(
+                        R.id.notificationIcon
+                );
 
         browseEventsButton =
-                findViewById(R.id.browseEventsButton);
+                findViewById(
+                        R.id.browseEventsButton
+                );
 
         myEventsButton =
-                findViewById(R.id.myEventsButton);
+                findViewById(
+                        R.id.myEventsButton
+                );
 
         notificationsButton =
-                findViewById(R.id.notificationsButton);
+                findViewById(
+                        R.id.notificationsButton
+                );
 
         navHome =
-                findViewById(R.id.navHome);
+                findViewById(
+                        R.id.navHome
+                );
 
         navEvents =
-                findViewById(R.id.navEvents);
+                findViewById(
+                        R.id.navEvents
+                );
 
         navMyEvents =
-                findViewById(R.id.navMyEvents);
+                findViewById(
+                        R.id.navMyEvents
+                );
 
         navProfile =
-                findViewById(R.id.navProfile);
+                findViewById(
+                        R.id.navProfile
+                );
 
 
-        // =========================
+        // =====================================================
         // GET STUDENT DETAILS
-        // =========================
+        // =====================================================
 
         userName =
-                getIntent().getStringExtra("USER_NAME");
+                getIntent().getStringExtra(
+                        "USER_NAME"
+                );
 
         email =
-                getIntent().getStringExtra("email");
+                getIntent().getStringExtra(
+                        "email"
+                );
 
 
-        // =========================
-        // SHOW STUDENT NAME
-        // =========================
+        // =====================================================
+        // DEFAULT STUDENT DETAILS
+        // =====================================================
 
-        if (userName != null &&
-                !userName.isEmpty()) {
+        if (userName == null ||
+                userName.trim().isEmpty()) {
 
-            studentNameTextView.setText(userName);
+            userName = "Student";
+        }
 
-        } else {
+        if (email == null) {
 
-            studentNameTextView.setText("Student");
+            email = "";
         }
 
 
-        // =========================
+        // =====================================================
+        // SHOW STUDENT NAME
+        // =====================================================
+
+        studentNameTextView.setText(
+                userName
+        );
+
+
+        // =====================================================
         // LOAD UPCOMING EVENT COUNT
-        // =========================
+        // =====================================================
 
         loadEventCount();
 
 
-        // =========================
+        // =====================================================
         // BROWSE EVENTS BUTTON
-        // =========================
+        // =====================================================
 
         browseEventsButton.setOnClickListener(v -> {
 
@@ -139,9 +192,9 @@ public class StudentDashboardActivity extends AppCompatActivity {
         });
 
 
-        // =========================
+        // =====================================================
         // MY EVENTS BUTTON
-        // =========================
+        // =====================================================
 
         myEventsButton.setOnClickListener(v -> {
 
@@ -165,24 +218,27 @@ public class StudentDashboardActivity extends AppCompatActivity {
         });
 
 
-        // =========================
+        // =====================================================
         // NOTIFICATIONS BUTTON
-        // =========================
+        // =====================================================
 
         notificationsButton.setOnClickListener(v -> {
 
-            // Notifications page will be connected later.
+            openNotifications();
 
         });
 
 
-        // =========================
-        // NOTIFICATION ICON
-        // =========================
+        // =====================================================
+        // NOTIFICATION BELL ICON
+        // =====================================================
+
+        notificationIcon.setClickable(true);
+        notificationIcon.setFocusable(true);
 
         notificationIcon.setOnClickListener(v -> {
 
-            // Notifications page will be connected later.
+            openNotifications();
 
         });
 
@@ -204,6 +260,32 @@ public class StudentDashboardActivity extends AppCompatActivity {
 
 
     // =====================================================
+    // OPEN NOTIFICATIONS
+    // =====================================================
+
+    private void openNotifications() {
+
+        Intent intent =
+                new Intent(
+                        StudentDashboardActivity.this,
+                        NotificationsActivity.class
+                );
+
+        intent.putExtra(
+                "USER_NAME",
+                userName
+        );
+
+        intent.putExtra(
+                "email",
+                email
+        );
+
+        startActivity(intent);
+    }
+
+
+    // =====================================================
     // LOAD UPCOMING EVENT COUNT
     // =====================================================
 
@@ -213,7 +295,9 @@ public class StudentDashboardActivity extends AppCompatActivity {
                 databaseHelper.getUpcomingEventCount();
 
         upcomingEventsCount.setText(
-                String.valueOf(upcomingCount)
+                String.valueOf(
+                        upcomingCount
+                )
         );
     }
 

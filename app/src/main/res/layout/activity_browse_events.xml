@@ -3,9 +3,12 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
     android:orientation="vertical"
+
     android:background="#F7F5FC">
 
 
@@ -14,37 +17,56 @@
     <!-- ================================================= -->
 
     <LinearLayout
+
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+
         android:minHeight="72dp"
+
         android:orientation="horizontal"
         android:gravity="center_vertical"
+
         android:background="#6B4DB5"
+
         android:paddingStart="20dp"
         android:paddingEnd="12dp">
+
 
         <!-- TITLE -->
 
         <LinearLayout
-            android:layout_width="0dp"
+
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+
             android:orientation="vertical">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Browse Events"
-                android:textColor="@android:color/white"
-                android:textSize="22sp"
-                android:textStyle="bold" />
 
             <TextView
+
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+
+                android:text="Browse Events"
+
+                android:textColor="@android:color/white"
+
+                android:textSize="22sp"
+
+                android:textStyle="bold" />
+
+
+            <TextView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
                 android:text="Discover upcoming college events"
+
                 android:textColor="#E8E0FF"
+
                 android:textSize="12sp"
+
                 android:layout_marginTop="2dp" />
 
         </LinearLayout>
@@ -53,22 +75,258 @@
 
 
     <!-- ================================================= -->
+    <!-- SEARCH BAR -->
+    <!-- ================================================= -->
+
+    <LinearLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:orientation="horizontal"
+
+        android:gravity="center_vertical"
+
+        android:background="#FFFFFF"
+
+        android:paddingStart="14dp"
+        android:paddingEnd="14dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp">
+
+
+        <EditText
+
+            android:id="@+id/searchEventsEditText"
+
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+
+            android:layout_marginStart="2dp"
+            android:layout_marginEnd="2dp"
+
+            android:background="@drawable/search_background"
+
+            android:hint="Search events..."
+
+            android:textColor="#2A2334"
+
+            android:textColorHint="#9993A3"
+
+            android:textSize="14sp"
+
+            android:singleLine="true"
+
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+
+            android:drawableStart="@drawable/ic_search"
+
+            android:drawablePadding="10dp"
+
+            android:inputType="text"
+
+            android:imeOptions="actionSearch"
+
+            android:contentDescription="Search events" />
+
+    </LinearLayout>
+
+
+    <!-- ================================================= -->
+    <!-- EVENT FILTERS -->
+    <!-- ================================================= -->
+
+    <HorizontalScrollView
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:scrollbars="none"
+
+        android:background="#FFFFFF"
+
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="10dp">
+
+
+        <LinearLayout
+
+            android:id="@+id/filterContainer"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:orientation="horizontal"
+
+            android:gravity="center_vertical">
+
+
+            <!-- ============================================= -->
+            <!-- ALL - ACTIVE -->
+            <!-- ============================================= -->
+
+            <TextView
+
+                android:id="@+id/filterAll"
+
+                android:layout_width="wrap_content"
+                android:layout_height="38dp"
+
+                android:gravity="center"
+
+                android:text="All"
+
+                android:textSize="13sp"
+
+                android:textStyle="bold"
+
+                android:textColor="@android:color/white"
+
+                android:paddingStart="18dp"
+                android:paddingEnd="18dp"
+
+                android:background="@drawable/filter_active_background"
+
+                android:clickable="true"
+
+                android:focusable="true"
+
+                android:foreground="?attr/selectableItemBackgroundBorderless" />
+
+
+            <!-- ============================================= -->
+            <!-- UPCOMING -->
+            <!-- ============================================= -->
+
+            <TextView
+
+                android:id="@+id/filterUpcoming"
+
+                android:layout_width="wrap_content"
+                android:layout_height="38dp"
+
+                android:layout_marginStart="8dp"
+
+                android:gravity="center"
+
+                android:text="Upcoming"
+
+                android:textSize="13sp"
+
+                android:textColor="#6B4DB5"
+
+                android:paddingStart="18dp"
+                android:paddingEnd="18dp"
+
+                android:background="@drawable/filter_inactive_background"
+
+                android:clickable="true"
+
+                android:focusable="true"
+
+                android:foreground="?attr/selectableItemBackgroundBorderless" />
+
+
+            <!-- ============================================= -->
+            <!-- FULL -->
+            <!-- ============================================= -->
+
+            <TextView
+
+                android:id="@+id/filterFull"
+
+                android:layout_width="wrap_content"
+                android:layout_height="38dp"
+
+                android:layout_marginStart="8dp"
+
+                android:gravity="center"
+
+                android:text="Full"
+
+                android:textSize="13sp"
+
+                android:textColor="#6B4DB5"
+
+                android:paddingStart="18dp"
+                android:paddingEnd="18dp"
+
+                android:background="@drawable/filter_inactive_background"
+
+                android:clickable="true"
+
+                android:focusable="true"
+
+                android:foreground="?attr/selectableItemBackgroundBorderless" />
+
+
+            <!-- ============================================= -->
+            <!-- COMPLETED -->
+            <!-- ============================================= -->
+
+            <TextView
+
+                android:id="@+id/filterCompleted"
+
+                android:layout_width="wrap_content"
+                android:layout_height="38dp"
+
+                android:layout_marginStart="8dp"
+
+                android:gravity="center"
+
+                android:text="Completed"
+
+                android:textSize="13sp"
+
+                android:textColor="#6B4DB5"
+
+                android:paddingStart="18dp"
+                android:paddingEnd="18dp"
+
+                android:background="@drawable/filter_inactive_background"
+
+                android:clickable="true"
+
+                android:focusable="true"
+
+                android:foreground="?attr/selectableItemBackgroundBorderless" />
+
+        </LinearLayout>
+
+    </HorizontalScrollView>
+
+
+    <!-- ================================================= -->
     <!-- EVENTS -->
     <!-- ================================================= -->
 
     <ScrollView
+
         android:layout_width="match_parent"
         android:layout_height="0dp"
+
         android:layout_weight="1"
+
         android:fillViewport="true"
+
         android:scrollbars="vertical">
 
+
         <LinearLayout
+
             android:id="@+id/eventsContainer"
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+
             android:orientation="vertical"
+
             android:paddingTop="8dp"
+
             android:paddingBottom="24dp" />
 
     </ScrollView>
@@ -79,13 +337,20 @@
     <!-- ================================================= -->
 
     <LinearLayout
+
         android:layout_width="match_parent"
         android:layout_height="75dp"
+
         android:orientation="horizontal"
+
         android:gravity="center"
+
         android:background="@android:color/white"
+
         android:elevation="10dp"
+
         android:paddingTop="4dp"
+
         android:paddingBottom="4dp">
 
 
@@ -94,29 +359,48 @@
         <!-- ================================================= -->
 
         <LinearLayout
+
             android:id="@+id/navHome"
+
             android:layout_width="0dp"
             android:layout_height="match_parent"
+
             android:layout_weight="1"
+
             android:orientation="vertical"
+
             android:gravity="center"
+
             android:clickable="true"
+
             android:focusable="true"
+
             android:background="?attr/selectableItemBackgroundBorderless">
 
+
             <ImageView
+
                 android:layout_width="24dp"
                 android:layout_height="24dp"
+
                 android:src="@drawable/ic_home"
+
                 android:contentDescription="Home"
+
                 app:tint="#777777" />
 
+
             <TextView
+
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+
                 android:text="Home"
+
                 android:textSize="11sp"
+
                 android:textColor="#777777"
+
                 android:layout_marginTop="3dp" />
 
         </LinearLayout>
@@ -127,30 +411,50 @@
         <!-- ================================================= -->
 
         <LinearLayout
+
             android:id="@+id/navEvents"
+
             android:layout_width="0dp"
             android:layout_height="match_parent"
+
             android:layout_weight="1"
+
             android:orientation="vertical"
+
             android:gravity="center"
+
             android:clickable="true"
+
             android:focusable="true"
+
             android:background="?attr/selectableItemBackgroundBorderless">
 
+
             <ImageView
+
                 android:layout_width="24dp"
                 android:layout_height="24dp"
+
                 android:src="@drawable/ic_event"
+
                 android:contentDescription="Events"
+
                 app:tint="#6B4DB5" />
 
+
             <TextView
+
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+
                 android:text="Events"
+
                 android:textSize="11sp"
+
                 android:textColor="#6B4DB5"
+
                 android:textStyle="bold"
+
                 android:layout_marginTop="3dp" />
 
         </LinearLayout>
@@ -161,29 +465,48 @@
         <!-- ================================================= -->
 
         <LinearLayout
+
             android:id="@+id/navMyEvents"
+
             android:layout_width="0dp"
             android:layout_height="match_parent"
+
             android:layout_weight="1"
+
             android:orientation="vertical"
+
             android:gravity="center"
+
             android:clickable="true"
+
             android:focusable="true"
+
             android:background="?attr/selectableItemBackgroundBorderless">
 
+
             <ImageView
+
                 android:layout_width="24dp"
                 android:layout_height="24dp"
+
                 android:src="@drawable/ic_confirmation"
+
                 android:contentDescription="My Events"
+
                 app:tint="#777777" />
 
+
             <TextView
+
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+
                 android:text="My Events"
+
                 android:textSize="11sp"
+
                 android:textColor="#777777"
+
                 android:layout_marginTop="3dp" />
 
         </LinearLayout>
@@ -194,29 +517,48 @@
         <!-- ================================================= -->
 
         <LinearLayout
+
             android:id="@+id/navProfile"
+
             android:layout_width="0dp"
             android:layout_height="match_parent"
+
             android:layout_weight="1"
+
             android:orientation="vertical"
+
             android:gravity="center"
+
             android:clickable="true"
+
             android:focusable="true"
+
             android:background="?attr/selectableItemBackgroundBorderless">
 
+
             <ImageView
+
                 android:layout_width="24dp"
                 android:layout_height="24dp"
+
                 android:src="@drawable/ic_person"
+
                 android:contentDescription="Profile"
+
                 app:tint="#777777" />
 
+
             <TextView
+
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+
                 android:text="Profile"
+
                 android:textSize="11sp"
+
                 android:textColor="#777777"
+
                 android:layout_marginTop="3dp" />
 
         </LinearLayout>

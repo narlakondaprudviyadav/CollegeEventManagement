@@ -56,15 +56,19 @@
 
                 </LinearLayout>
 
-                <ImageView
+                <ImageButton
                     android:id="@+id/notificationIcon"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_gravity="center"
+                    android:padding="15dp"
                     android:src="@drawable/ic_notifications"
-                    app:tint="#6B4DB5"
-                    android:padding="12dp"
-                    android:background="#FFFFFF"
-                    android:contentDescription="Notifications" />
+                    android:background="@android:color/transparent"
+                    android:contentDescription="Notifications"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:enabled="true"
+                    android:foreground="?attr/selectableItemBackgroundBorderless" />
 
             </LinearLayout>
 
