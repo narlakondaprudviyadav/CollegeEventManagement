@@ -20,7 +20,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME =
             "CollegeEventManagement.db";
 
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 5;
 
 
     // =====================================================
@@ -96,6 +96,35 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String REG_STUDENT_NAME =
             "student_name";
+
+
+    // =====================================================
+    // NOTIFICATIONS TABLE
+    // =====================================================
+
+    private static final String TABLE_NOTIFICATIONS =
+            "notifications";
+
+    private static final String NOTIFICATION_ID =
+            "notification_id";
+
+    private static final String NOTIFICATION_EVENT_ID =
+            "event_id";
+
+    private static final String NOTIFICATION_TITLE =
+            "title";
+
+    private static final String NOTIFICATION_MESSAGE =
+            "message";
+
+    private static final String NOTIFICATION_TYPE =
+            "notification_type";
+
+    private static final String NOTIFICATION_TIMESTAMP =
+            "notification_timestamp";
+
+    private static final String NOTIFICATION_READ =
+            "is_read";
 
 
     // =====================================================
@@ -211,6 +240,39 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         ")";
 
         db.execSQL(createRegistrationsTable);
+
+
+        // -------------------------------------------------
+        // NOTIFICATIONS TABLE
+        // -------------------------------------------------
+
+        String createNotificationsTable =
+                "CREATE TABLE " + TABLE_NOTIFICATIONS + " (" +
+
+                        NOTIFICATION_ID +
+                        " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+
+                        NOTIFICATION_EVENT_ID +
+                        " INTEGER, " +
+
+                        NOTIFICATION_TITLE +
+                        " TEXT NOT NULL, " +
+
+                        NOTIFICATION_MESSAGE +
+                        " TEXT NOT NULL, " +
+
+                        NOTIFICATION_TYPE +
+                        " INTEGER NOT NULL, " +
+
+                        NOTIFICATION_TIMESTAMP +
+                        " INTEGER NOT NULL, " +
+
+                        NOTIFICATION_READ +
+                        " INTEGER NOT NULL DEFAULT 0" +
+
+                        ")";
+
+        db.execSQL(createNotificationsTable);
     }
 
 
@@ -312,6 +374,44 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                             " INTEGER NOT NULL DEFAULT 50"
             );
         }
+
+
+        // -------------------------------------------------
+        // VERSION 4 -> VERSION 5
+        // CREATE NOTIFICATIONS TABLE
+        // -------------------------------------------------
+
+        if (oldVersion < 5) {
+
+            String createNotificationsTable =
+                    "CREATE TABLE IF NOT EXISTS " +
+                            TABLE_NOTIFICATIONS + " (" +
+
+                            NOTIFICATION_ID +
+                            " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+
+                            NOTIFICATION_EVENT_ID +
+                            " INTEGER, " +
+
+                            NOTIFICATION_TITLE +
+                            " TEXT NOT NULL, " +
+
+                            NOTIFICATION_MESSAGE +
+                            " TEXT NOT NULL, " +
+
+                            NOTIFICATION_TYPE +
+                            " INTEGER NOT NULL, " +
+
+                            NOTIFICATION_TIMESTAMP +
+                            " INTEGER NOT NULL, " +
+
+                            NOTIFICATION_READ +
+                            " INTEGER NOT NULL DEFAULT 0" +
+
+                            ")";
+
+            db.execSQL(createNotificationsTable);
+        }
     }
 
 
@@ -340,7 +440,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 : role.trim();
 
 
-        // Validate fields
         if (name.isEmpty() ||
                 email.isEmpty() ||
                 password.isEmpty() ||
@@ -350,7 +449,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
 
 
-        // Check duplicate email
         if (checkEmail(email)) {
 
             return false;
@@ -443,6 +541,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                                 email
                         }
                 );
+
 
         boolean exists =
                 cursor.moveToFirst();
@@ -677,9 +776,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return result != -1;
     }
 
-// =====================================================
-// UPDATE EVENT
-// =====================================================
+
+    // =====================================================
+    // UPDATE EVENT
+    // =====================================================
 
     public boolean updateEvent(
             int eventId,
@@ -691,9 +791,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             String organizer,
             int maxRegistrations) {
 
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db =
+                this.getWritableDatabase();
 
-        ContentValues values = new ContentValues();
+        ContentValues values =
+                new ContentValues();
 
         values.put(EVENT_NAME, eventName);
         values.put(EVENT_DESCRIPTION, description);
@@ -716,24 +818,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return rowsUpdated > 0;
     }
+
+
     // =====================================================
     // GET ALL EVENTS
-    // FIXED VERSION
     // =====================================================
 
     public Cursor getAllEvents() {
 
         SQLiteDatabase db =
                 this.getReadableDatabase();
-
-        /*
-         * IMPORTANT:
-         *
-         * We use rawQuery here instead of db.query().
-         *
-         * This prevents Android from incorrectly treating
-         * "event_id DESC" as the LIMIT value.
-         */
 
         String query =
                 "SELECT * " +
@@ -916,8 +1010,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         try {
 
-            // Delete registrations belonging
-            // to this event first
             db.delete(
                     TABLE_REGISTRATIONS,
                     REG_EVENT_ID + "=?",
@@ -975,10 +1067,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         .toLowerCase(Locale.ROOT);
 
 
-        // -------------------------------------------------
-        // Check duplicate registration
-        // -------------------------------------------------
-
         if (isStudentRegistered(
                 eventId,
                 studentEmail)) {
@@ -986,10 +1074,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             return false;
         }
 
-
-        // -------------------------------------------------
-        // Check event capacity
-        // -------------------------------------------------
 
         if (isEventFull(eventId)) {
 
@@ -1031,9 +1115,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return result != -1;
     }
 
-// =====================================================
-// DEREGISTER STUDENT FROM EVENT
-// =====================================================
+
+    // =====================================================
+    // DEREGISTER STUDENT FROM EVENT
+    // =====================================================
 
     public boolean deregisterFromEvent(
             int eventId,
@@ -1067,6 +1152,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return result > 0;
     }
+
+
     // =====================================================
     // CHECK IF STUDENT IS REGISTERED
     // =====================================================
@@ -1345,5 +1432,195 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 query,
                 null
         );
+    }
+
+
+    // =====================================================
+    // SAVE NOTIFICATION
+    // =====================================================
+
+    public boolean saveNotification(
+            int eventId,
+            String title,
+            String message,
+            int notificationType) {
+
+        SQLiteDatabase db =
+                this.getWritableDatabase();
+
+        ContentValues values =
+                new ContentValues();
+
+
+        values.put(
+                NOTIFICATION_EVENT_ID,
+                eventId
+        );
+
+
+        values.put(
+                NOTIFICATION_TITLE,
+                title
+        );
+
+
+        values.put(
+                NOTIFICATION_MESSAGE,
+                message
+        );
+
+
+        values.put(
+                NOTIFICATION_TYPE,
+                notificationType
+        );
+
+
+        values.put(
+                NOTIFICATION_TIMESTAMP,
+                System.currentTimeMillis()
+        );
+
+
+        values.put(
+                NOTIFICATION_READ,
+                0
+        );
+
+
+        long result =
+                db.insert(
+                        TABLE_NOTIFICATIONS,
+                        null,
+                        values
+                );
+
+
+        db.close();
+
+
+        return result != -1;
+    }
+
+
+    // =====================================================
+    // GET ALL NOTIFICATIONS
+    // =====================================================
+
+    public Cursor getAllNotifications() {
+
+        SQLiteDatabase db =
+                this.getReadableDatabase();
+
+        String query =
+                "SELECT " +
+                        NOTIFICATION_ID + ", " +
+                        NOTIFICATION_EVENT_ID + ", " +
+                        NOTIFICATION_TITLE + ", " +
+                        NOTIFICATION_MESSAGE + ", " +
+                        NOTIFICATION_TYPE + ", " +
+                        NOTIFICATION_TIMESTAMP + ", " +
+                        NOTIFICATION_READ +
+
+                        " FROM " +
+                        TABLE_NOTIFICATIONS +
+
+                        " ORDER BY " +
+                        NOTIFICATION_TIMESTAMP +
+                        " DESC";
+
+        return db.rawQuery(
+                query,
+                null
+        );
+    }
+
+
+    // =====================================================
+    // MARK NOTIFICATION AS READ
+    // =====================================================
+
+    public boolean markNotificationAsRead(
+            int notificationId) {
+
+        SQLiteDatabase db =
+                this.getWritableDatabase();
+
+        ContentValues values =
+                new ContentValues();
+
+        values.put(
+                NOTIFICATION_READ,
+                1
+        );
+
+        int rowsUpdated =
+                db.update(
+                        TABLE_NOTIFICATIONS,
+                        values,
+                        NOTIFICATION_ID + " = ?",
+                        new String[]{
+                                String.valueOf(
+                                        notificationId
+                                )
+                        }
+                );
+
+        db.close();
+
+        return rowsUpdated > 0;
+    }
+
+
+    // =====================================================
+    // CLEAR ALL NOTIFICATIONS
+    // =====================================================
+
+    public boolean clearAllNotifications() {
+
+        SQLiteDatabase db =
+                this.getWritableDatabase();
+
+        int rowsDeleted =
+                db.delete(
+                        TABLE_NOTIFICATIONS,
+                        null,
+                        null
+                );
+
+        db.close();
+
+        return rowsDeleted > 0;
+    }
+
+
+    // =====================================================
+    // GET NOTIFICATION COUNT
+    // =====================================================
+
+    public int getNotificationCount() {
+
+        SQLiteDatabase db =
+                this.getReadableDatabase();
+
+        Cursor cursor =
+                db.rawQuery(
+                        "SELECT COUNT(*) FROM " +
+                                TABLE_NOTIFICATIONS,
+                        null
+                );
+
+        int count = 0;
+
+        if (cursor.moveToFirst()) {
+
+            count =
+                    cursor.getInt(0);
+        }
+
+        cursor.close();
+        db.close();
+
+        return count;
     }
 }

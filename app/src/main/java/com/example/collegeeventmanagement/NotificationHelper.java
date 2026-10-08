@@ -12,22 +12,11 @@ import androidx.core.app.NotificationManagerCompat;
 
 public class NotificationHelper {
 
-
-    // =====================================================
-    // CHANNEL
-    // =====================================================
-
     private static final String CHANNEL_ID =
             "college_event_reminders";
 
-
     private static final String CHANNEL_NAME =
             "College Event Reminders";
-
-
-    // =====================================================
-    // NOTIFICATION ID BASE
-    // =====================================================
 
     private static final int NOTIFICATION_BASE =
             10000;
@@ -40,10 +29,8 @@ public class NotificationHelper {
     public static void createNotificationChannel(
             Context context) {
 
-
         if (Build.VERSION.SDK_INT >=
                 Build.VERSION_CODES.O) {
-
 
             NotificationChannel channel =
                     new NotificationChannel(
@@ -53,27 +40,17 @@ public class NotificationHelper {
                                     .IMPORTANCE_HIGH
                     );
 
-
             channel.setDescription(
                     "Automatic reminders for registered college events"
             );
 
-
-            channel.enableVibration(
-                    true
-            );
-
-
-            channel.setShowBadge(
-                    true
-            );
-
+            channel.enableVibration(true);
+            channel.setShowBadge(true);
 
             NotificationManager manager =
                     context.getSystemService(
                             NotificationManager.class
                     );
-
 
             if (manager != null) {
 
@@ -92,23 +69,52 @@ public class NotificationHelper {
     private static boolean canNotify(
             Context context) {
 
-
         if (Build.VERSION.SDK_INT >=
                 Build.VERSION_CODES.TIRAMISU) {
-
 
             return context.checkSelfPermission(
                     Manifest.permission.POST_NOTIFICATIONS
             ) == PackageManager.PERMISSION_GRANTED;
         }
 
-
         return true;
     }
 
 
     // =====================================================
-    // 1 HOUR REMINDER
+    // SAVE NOTIFICATION TO DATABASE
+    // =====================================================
+
+    private static void saveNotificationToHistory(
+            Context context,
+            int eventId,
+            String title,
+            String message,
+            int notificationType) {
+
+        try {
+
+            DatabaseHelper databaseHelper =
+                    new DatabaseHelper(context);
+
+            databaseHelper.saveNotification(
+                    eventId,
+                    title,
+                    message,
+                    notificationType
+            );
+
+            databaseHelper.close();
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
+    }
+
+
+    // =====================================================
+    // ONE HOUR REMINDER
     // =====================================================
 
     public static void showOneHourReminder(
@@ -119,23 +125,32 @@ public class NotificationHelper {
             String eventTime,
             String venue) {
 
-
-        if (!canNotify(context)) {
-            return;
-        }
-
-
         String title =
                 "Event in 1 Hour";
-
 
         String message =
                 eventName +
                         " is starting in 1 hour.\n" +
-                        "Time: " +
-                        eventTime +
-                        "\nVenue: " +
-                        venue;
+                        "Time: " + eventTime +
+                        "\nVenue: " + venue;
+
+
+        // Save to in-app notification history
+        // BEFORE checking Android permission.
+        saveNotificationToHistory(
+                context,
+                eventId,
+                title,
+                message,
+                1
+        );
+
+
+        // Show Android notification
+        if (!canNotify(context)) {
+
+            return;
+        }
 
 
         showNotification(
@@ -149,7 +164,7 @@ public class NotificationHelper {
 
 
     // =====================================================
-    // 5 MINUTE REMINDER
+    // FIVE MINUTE REMINDER
     // =====================================================
 
     public static void showFiveMinuteReminder(
@@ -160,23 +175,32 @@ public class NotificationHelper {
             String eventTime,
             String venue) {
 
-
-        if (!canNotify(context)) {
-            return;
-        }
-
-
         String title =
                 "Event in 5 Minutes";
-
 
         String message =
                 eventName +
                         " starts in 5 minutes.\n" +
-                        "Time: " +
-                        eventTime +
-                        "\nVenue: " +
-                        venue;
+                        "Time: " + eventTime +
+                        "\nVenue: " + venue;
+
+
+        // Save to in-app notification history
+        // BEFORE checking Android permission.
+        saveNotificationToHistory(
+                context,
+                eventId,
+                title,
+                message,
+                2
+        );
+
+
+        // Show Android notification
+        if (!canNotify(context)) {
+
+            return;
+        }
 
 
         showNotification(
@@ -190,7 +214,7 @@ public class NotificationHelper {
 
 
     // =====================================================
-    // EVENT STARTED
+    // EVENT STARTED NOTIFICATION
     // =====================================================
 
     public static void showEventStartedNotification(
@@ -201,27 +225,34 @@ public class NotificationHelper {
             String eventTime,
             String venue) {
 
-
-        if (!canNotify(context)) {
-            return;
-        }
-
-
         String title =
                 "Event Started";
-
 
         String message =
                 eventName +
                         " has started.\n" +
-                        "Event: " +
-                        eventName +
-                        "\nDate: " +
-                        eventDate +
-                        "\nTime: " +
-                        eventTime +
-                        "\nVenue: " +
-                        venue;
+                        "Event: " + eventName +
+                        "\nDate: " + eventDate +
+                        "\nTime: " + eventTime +
+                        "\nVenue: " + venue;
+
+
+        // Save to in-app notification history
+        // BEFORE checking Android permission.
+        saveNotificationToHistory(
+                context,
+                eventId,
+                title,
+                message,
+                3
+        );
+
+
+        // Show Android notification
+        if (!canNotify(context)) {
+
+            return;
+        }
 
 
         showNotification(
@@ -235,7 +266,7 @@ public class NotificationHelper {
 
 
     // =====================================================
-    // SHOW NOTIFICATION
+    // SHOW ANDROID NOTIFICATION
     // =====================================================
 
     private static void showNotification(
@@ -245,10 +276,7 @@ public class NotificationHelper {
             String title,
             String message) {
 
-
-        createNotificationChannel(
-                context
-        );
+        createNotificationChannel(context);
 
 
         int notificationId =
@@ -295,9 +323,7 @@ public class NotificationHelper {
         );
 
 
-        builder.setAutoCancel(
-                true
-        );
+        builder.setAutoCancel(true);
 
 
         builder.setDefaults(
